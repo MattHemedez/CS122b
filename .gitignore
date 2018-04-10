@@ -165,6 +165,8 @@ buildNumber.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
+# Putty Files
+cs122b.ppk
 
 # End of https://www.gitignore.io/api/java,maven,eclipse,java-web,intellij
 
