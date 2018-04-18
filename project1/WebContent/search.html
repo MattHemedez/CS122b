@@ -1,0 +1,35 @@
+<!-- This page will be redirected from any url if you are not logged in -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Fabflix</title>
+</head>
+<body>
+<h2>Search Our Databases</h2>
+<!-- Disable the default action because our JS function will handle it. -->
+<form id="login_form" method="post" action="#">
+    <label><b>title</b></label>
+    <input type="text" placeholder="Enter Title" name="title">
+    <br>
+    <label><b>year</b></label>
+    <input type="text" placeholder="Enter Year" name="year">
+    <br>
+    <label><b>director</b></label>
+    <input type="text" placeholder="Enter Director Name" name="director">
+    <br>
+    <label><b>Star's Name</b></label>
+    <input type="text" placeholder="Enter Your Celebrity Crush" name="starname">
+    <br>
+    <input type="submit" value="Login">
+</form>
+
+<div id="login_error_message"></div>
+
+<!-- include jQuery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- include our own JS file -->
+<script src="./login.js"></script>
+
+</body>
+</html>

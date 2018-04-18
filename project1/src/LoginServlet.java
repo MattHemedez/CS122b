@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
     				   				ResultSet.CONCUR_READ_ONLY);
     		// prepare query
     		
-    		String query = "SELECT c.firstName, c.lastName FROM customers AS c WHERE c.password LIKE '" + password + "' AND c.email LIKE '" + username + "@%' OR c.password LIKE '" + password + "' AND c.email LIKE '" + username + "';";
+    		String query = "SELECT c.firstName, c.lastName FROM customers AS c WHERE c.password LIKE '" + password + "' AND (c.email LIKE '" + username + "@%' OR c.email LIKE '" + username + "');";
     		
     		// execute query
     		ResultSet resultSet = statement.executeQuery(query);
@@ -61,10 +61,9 @@ public class LoginServlet extends HttpServlet {
     			// Login fail
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "fail");
-                responseJsonObject.addProperty("message", "The username password combination doesn't exist" + resultSet.getFetchSize());
+                responseJsonObject.addProperty("message", "The username password combination doesn't exist");
                 response.getWriter().write(responseJsonObject.toString());
     		}
-    			
     		resultSet.close();
     		statement.close();
     		connection.close();
