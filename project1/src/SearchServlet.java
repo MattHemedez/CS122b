@@ -1,17 +1,20 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonObject;
 
-public class SearchServlet {
+@WebServlet("/SearchServlet")
+public class SearchServlet extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
 
 
@@ -29,10 +32,12 @@ public class SearchServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-
-	        /* This example only allows username/password to be test/test
-	        /  in the real project, you should talk to the database to verify username/password
-	        */        
+    
+	        PrintWriter out = response.getWriter();
+	        out.println("<html>");
+	        out.println("<head><title>ZotFlix</title></head>");
+	        out.println("<body>");
+	        
 	        try 
 	        {
 	    		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -44,67 +49,57 @@ public class SearchServlet {
 	    		// prepare query
 	    		String query = "SELECT m.title "
 	    				     + "FROM movies AS m, stars AS s, stars_in_movies as SM "
-	    				     + "WHERE ";
+	    				     + "WHERE m.id = SM.movieId AND SM.starId = s.id AND ";
+    		
+    			if(title != null) 
+    			{
+    				query += "m.title LIKE '%" + title + "%' AND ";
+    			}
+    			else if(year != null) 
+    			{
+    				query += "m.year ='" + year + "' AND ";
+    			}
+    			else if(director != null) 
+    			{
+    				query += "m.director LIKE '%" + director + "%' AND ";	
+    			}
+    			else if(starname != null) 
+    			{
+    				String delim = "[ ]+";
+    				String[] parsed = starname.split(delim);
+    				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1];
+    			}
 	    		
-	    		while(true) {
-	    			if(title != null) {
-	    				query += "m.title =" + title + " AND ";
-	    			}else if(year != null) {
-	    				query += "m.year =" + year + " AND ";
-	    			}else if(director != null) {
-	    				query += "m.director =" + director + " AND ";
-	    			}else if(starname != null) {
-	    				String delim = "[ ]+";
-	    				String[] parsed = starname.split(delim);
-	    				
-	    				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1] + "';";
-	    			}
+	    		if(query.endsWith("AND ")) 
+	    		{
+	    			query = query.substring(0, query.length() - 4);
 	    		}
 	    		
-	    		if(query.endsWith("AND ")) {
-	    			
-	    		}
+	    		query += ";";
 	    		
-//	    		String query = "SELECT c.firstName, c.lastName FROM customers AS c WHERE c.password LIKE '" + password + "' AND (c.email LIKE '" + username + "@%' OR c.email LIKE '" + username + "');";
+	    		out.println("<h3> ");
+    			out.println(query);
+    			out.println("</h3>");
 	    		
-	    		// execute query
 	    		ResultSet resultSet = statement.executeQuery(query);
-	    		if(resultSet.next())
-	    		{
-	    			// Login success:
-
-	                // set this user into the session
-	                request.getSession().setAttribute("user", new User(username));
-
-	                JsonObject responseJsonObject = new JsonObject();
-	                responseJsonObject.addProperty("status", "success");
-	                responseJsonObject.addProperty("message", "success");
-
-	                response.getWriter().write(responseJsonObject.toString());
+	    		while(resultSet.next()) {
+	    			String movieName = resultSet.getString("title");
+	    			out.println("<h3> ");
+	    			out.println(movieName);
+	    			out.println("</h3>");
 	    		}
-	    		else
-	    		{
-	    			// Login fail
-	                JsonObject responseJsonObject = new JsonObject();
-	                responseJsonObject.addProperty("status", "fail");
-	                responseJsonObject.addProperty("message", "The username password combination doesn't exist");
-	                response.getWriter().write(responseJsonObject.toString());
-	    		}
-	    		resultSet.close();
+	    		
 	    		statement.close();
 	    		connection.close();
 	    	}
 	        catch (Exception e) 
 	        {
 	    		e.printStackTrace();	
-	    		
-	    		// Login fail
-	            JsonObject responseJsonObject = new JsonObject();
-	            responseJsonObject.addProperty("status", "fail");
-	            responseJsonObject.addProperty("message", "Communication with server error");
-	            response.getWriter().write(responseJsonObject.toString());
+	    		out.println("<h3> ");
+    			out.println(e.getMessage());
+    			out.println("</h3>");
 	    	}
-	
-	
-	
+	        out.println("</body>");
+	        out.println("</html>");
+	    }
 }
