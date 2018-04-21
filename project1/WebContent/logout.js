@@ -3,7 +3,13 @@
  * @param resultDataString jsonObject
  */
 function handleLogoutResult(resultDataString) {
-    resultDataJson = JSON.parse(resultDataString);
+	try{
+		resultDataJson = JSON.parse(resultDataString);
+    }
+    catch(err){
+    	window.location.replace("login.html");
+    }
+    
 
     console.log("handle logout response");
     console.log(resultDataJson);
@@ -34,15 +40,26 @@ function submitLogoutForm(formSubmitEvent) {
     //   which will cause the page to refresh
     //   see jQuery reference for details: https://api.jquery.com/submit/
     formSubmitEvent.preventDefault();
-
-    jQuery.post(
-        "api/logout",
-        // Serialize the logout form to the data sent by POST request
-        jQuery("#logout_form").serialize(),
-        (resultDataString) => handleLogoutResult(resultDataString));
+    try{
+    	jQuery.post(
+    	        "api/logout",
+    	        // Serialize the logout form to the data sent by POST request
+    	        jQuery("#logout_form").serialize(),
+    	        (resultDataString) => handleLogoutResult(resultDataString));
+    }
+    catch(err){
+    	window.location.replace("login.html");
+    }
+    
 
 }
 
 // Bind the submit action of the form to a handler function
-jQuery("#logout_form").submit((event) => submitLogoutForm(event));
+try{
+	jQuery("#logout_form").submit((event) => submitLogoutForm(event));
+}
+catch(err){
+	window.location.replace("login.html");
+}
+
 
