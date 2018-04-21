@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,17 +26,17 @@ public class SearchServlet extends HttpServlet {
 	
 	    	
 	    	String title = request.getParameter("title");
-	        String year = request.getParameter("year");
+	        String year = request.getParameter("eyear");
 	        String director = request.getParameter("director");
 	        String starname = request.getParameter("starname");
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+	        String loginUrl = "jdbc:mysql://ec2-18-188-198-172.us-east-2.compute.amazonaws.com:3306/moviedb";
     
 	        PrintWriter out = response.getWriter();
 	        out.println("<html>");
-	        out.println("<head><title>ZotFlix</title></head>");
+	        out.println("<head><title>FabFlix</title></head>");
 	        out.println("<body>");
 	        
 	        try 
@@ -47,7 +48,9 @@ public class SearchServlet extends HttpServlet {
 	    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
 	    				   				ResultSet.CONCUR_READ_ONLY);
 	    		// prepare query
-	    		String query = "SELECT m.title "
+	    	
+	    		
+	    		String query = "SELECT DISTINCT m.title "
 	    				     + "FROM movies AS m, stars AS s, stars_in_movies as SM "
 	    				     + "WHERE m.id = SM.movieId AND SM.starId = s.id AND ";
     		
@@ -64,7 +67,7 @@ public class SearchServlet extends HttpServlet {
     				query += "m.director LIKE '%" + director + "%' AND ";	
     			}
     			else if(starname != null) 
-    			{
+    			{	
     				String delim = "[ ]+";
     				String[] parsed = starname.split(delim);
     				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1];
@@ -77,17 +80,33 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		query += ";";
 	    		
-	    		out.println("<h3> ");
-    			out.println(query);
-    			out.println("</h3>");
+	    		
 	    		
 	    		ResultSet resultSet = statement.executeQuery(query);
+	    		
+	    		ArrayList<String> movieTitles = new ArrayList<String>();
+	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
-	    			out.println("<h3> ");
-	    			out.println(movieName);
-	    			out.println("</h3>");
+	    			movieTitles.add(movieName);
 	    		}
+    			
+	    		if (movieTitles.size()>0) {
+	    			
+	                request.setAttribute("movies", movieTitles);
+
+	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
+	                dispatcher.forward(request, response);
+	            }else {
+	            	// no movies in the search
+	            	request.setAttribute("movies", "Error no movies found with search criteria");
+
+	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
+	                dispatcher.forward(request, response);
+	            }
+	    		
+	    		
+
 	    		
 	    		statement.close();
 	    		connection.close();
