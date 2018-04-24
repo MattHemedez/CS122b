@@ -15,11 +15,14 @@
 
     	ArrayList<String> test = (ArrayList<String>) request.getAttribute("movies");
     	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
-    	
+    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
+
     	
     	for(int i= 0; i<test.size(); ++i){
         	out.print("<h2> " + test.get(i) + " </h2>");
         	out.print("<p>" + actors.get(test.get(i)) + "</p>");
+        	out.print("<p>" + genres.get(test.get(i)) + "</p>");
+
     	}
     	
     	
