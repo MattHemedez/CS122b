@@ -29,10 +29,11 @@ public class SearchServlet extends HttpServlet {
 	        String year = request.getParameter("eyear");
 	        String director = request.getParameter("director");
 	        String starname = request.getParameter("starname");
+	        String limit = request.getParameter("limit");
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://ec2-18-222-68-209.us-east-2.compute.amazonaws.com:3306/moviedb";
+	        String loginUrl = "jdbc:mysql://localhost/moviedb";
     
 	        PrintWriter out = response.getWriter();
 	        out.println("<html>");
@@ -79,7 +80,7 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		query += "GROUP BY m.id "
 	    				+ "ORDER BY m.year ASC "
-	    				+ "LIMIT 20 "
+	    				+ "LIMIT " + limit + " "
 	    				+ "OFFSET 0;";
 	    		
 	    		ResultSet resultSet = statement.executeQuery(query);
