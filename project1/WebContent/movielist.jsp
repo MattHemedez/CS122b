@@ -20,9 +20,17 @@
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
 	    	int totalPages = (int)request.getAttribute("totalPages");
-	    	String url = (String) request.getAttribute("url");
-	    	if(!url.contains("&pagenum="))
-	    		url += "&pagenum=";
+	    	String url = ((String) request.getAttribute("url")).replaceAll("&pagenum=[^&]*", "") + "&pagenum=";
+	    	String firstLink = "";
+	    	if(pageNum == 1)
+	    		firstLink = "#";
+	    	else 
+	    		firstLink = url + "1";
+	    	String lastLink = "";
+	    	if(pageNum >= totalPages)
+	    		lastLink = "#";
+	    	else 
+	    		lastLink = url + totalPages;
 	    %>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
@@ -67,7 +75,7 @@
 		<nav aria-label="Upper Page navigation">
 			<ul class="pagination">
 				<li>
-					<a href="<%=url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" +1%>" aria-label="Previous">
+					<a href="<%=firstLink%>" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a>
 				</li>
@@ -86,22 +94,22 @@
 							link = "#";
 						}
 						else if(pageIndex <= totalPages)
-							link = url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" +pageIndex;
+							link = url + pageIndex;
 						else
 							liClass = " class='disabled'";
+						
 				%>
 				
 				
 				<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
 				<%pageIndex += 1;}%>
 				<li>
-					<a href="<%=url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" + totalPages%>" aria-label="Next">
+					<a href="<%=lastLink%>" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a>	
 				</li>
 			</ul>
 		</nav>
-		
 		<div class="container-fluid">
 		<%
 	    	for(int i= 0; i<movieList.size(); ++i){
@@ -116,20 +124,38 @@
 	        			</div></div> <%}%>
 	    </div>
 	    
-	    <nav aria-label="Bottom Page navigation">
+	    <nav aria-label="Upper Page navigation">
 			<ul class="pagination">
 				<li>
-					<a href="#" aria-label="Previous">
+					<a href="<%=firstLink%>" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a>
 				</li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
+				<%
+					pageIndex = pageNum + -2;
+					link = "";
+					liClass = "";
+					for(int i = -2; i < 3; ++i)
+					{
+						liClass = "";
+						if(pageIndex <= 0)
+							pageIndex = 1;
+						if(pageIndex == pageNum)
+						{
+							liClass = " class='active'";
+							link = "#";
+						}
+						else if(pageIndex <= totalPages)
+							link = url + pageIndex;
+						else
+							liClass = " class='disabled'";
+				%>
+				
+				
+				<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
+				<%pageIndex += 1;}%>
 				<li>
-					<a href="#" aria-label="Next">
+					<a href="<%=lastLink%>" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a>	
 				</li>
