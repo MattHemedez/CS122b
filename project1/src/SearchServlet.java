@@ -45,11 +45,6 @@ public class SearchServlet extends HttpServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 	        String loginUrl = "jdbc:mysql://localhost/moviedb";
-    
-	        PrintWriter out = response.getWriter();
-	        out.println("<html>");
-	        out.println("<head><title>FabFlix</title></head>");
-	        out.println("<body>");
 	        
 	        try 
 	        {
@@ -96,9 +91,7 @@ public class SearchServlet extends HttpServlet {
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
 	    		
-	    		
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
-	    		
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
@@ -119,10 +112,6 @@ public class SearchServlet extends HttpServlet {
 	    			
 	    		}
     		
-	    		
-	    		
-	    		
-	    		
 	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
 	    			
@@ -131,6 +120,7 @@ public class SearchServlet extends HttpServlet {
 	                request.setAttribute("actors", actors);
 	                request.setAttribute("genres", genres);
 	                request.setAttribute("pageNum", pageNum);
+	                request.setAttribute("status", "Success");
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
 	            }else {
@@ -139,22 +129,13 @@ public class SearchServlet extends HttpServlet {
 
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
-	            }
-	    		
-	    		
-
-	    		
+	            }	    		
 	    		statement.close();
 	    		connection.close();
 	    	}
 	        catch (Exception e) 
 	        {
-	    		e.printStackTrace();	
-	    		out.println("<h3> ");
-    			out.println(e.getMessage());
-    			out.println("</h3>");
+	    		e.printStackTrace();
 	    	}
-	        out.println("</body>");
-	        out.println("</html>");
 	    }
 }
