@@ -56,8 +56,7 @@ public class SearchServlet extends HttpServlet {
 	    		// prepare query
 	    		String query ="FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm " + 
 	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND ";
-	    		
-    			if(title != null && !title.equals("")) 
+			if(title != null && !title.equals("")) 
     				query += "m.title LIKE '%" + title + "%' AND ";
     			
     			if(year != null && !year.equals("")) 
@@ -99,9 +98,17 @@ public class SearchServlet extends HttpServlet {
 	    		statement.getMoreResults();
 	    		resultSet = statement.getResultSet();
 	    		
+	    		String url =request.getScheme() + "://" +   // "http" + "://
+	    	             request.getServerName() +       // "myhost"
+	    	             ":" +                           // ":"
+	    	             request.getServerPort() +       // "8080"
+	    	             request.getRequestURI() +       // "/people"
+	    	             "?" +                           // "?"
+	    	             request.getQueryString();
+	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
-	    		
+
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
 	    		
 	    		while(resultSet.next()) {
@@ -125,7 +132,7 @@ public class SearchServlet extends HttpServlet {
     		
 	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
-	    			
+	    			request.setAttribute("url", url);
 	                request.setAttribute("movies", movieTitles);
 	                request.setAttribute("query", query);
 	                request.setAttribute("actors", actors);

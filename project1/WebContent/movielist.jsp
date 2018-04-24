@@ -19,7 +19,8 @@
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
-	    	String url = request.getRequestURL().toString();
+	    	String url = (String) request.getAttribute("url");
+	    	url += "&pagenum=";
 	    %>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
@@ -78,7 +79,9 @@
 						if(pageIndex + i == pageNum)
 							link = "#";
 				%>
-				<li><a href="<%=url%>"><%out.print(pageIndex);%></a></li>
+				
+				
+				<li><a href="<%=url.substring(0,url.indexOf("&pagenum="))+"&pagenum=" +pageIndex%>"><%out.print(pageIndex);%></a></li>
 				<%pageIndex += 1;}%>
 				<li>
 					<a href="#" aria-label="Next">
