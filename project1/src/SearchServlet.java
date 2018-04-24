@@ -44,12 +44,14 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
+
 	        String loginUrl = "jdbc:mysql://ec2-18-222-68-209.us-east-2.compute.amazonaws.com/moviedb";
     
 	        PrintWriter out = response.getWriter();
 	        out.println("<html>");
 	        out.println("<head><title>FabFlix</title></head>");
 	        out.println("<body>");
+
 	        
 	        try 
 	        {
@@ -60,11 +62,7 @@ public class SearchServlet extends HttpServlet {
 	    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
 	    				   				ResultSet.CONCUR_READ_ONLY);
 	    		// prepare query
-	    	
-	    		
-	    		
-	    		
-	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, GROUP_CONCAT(s.name SEPARATOR ',') AS stars, GROUP_CONCAT(g.name SEPARATOR ',') AS genres " + 
+	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, r.numVotes, GROUP_CONCAT(DISTINCT s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + 
 	    				"FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm " + 
 	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND "; 
 	 
@@ -106,8 +104,8 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
+
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
-	    		
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
@@ -128,10 +126,6 @@ public class SearchServlet extends HttpServlet {
 	    			
 	    		}
     		
-	    		
-	    		
-	    		
-	    		
 	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
 	    			request.setAttribute("url", url);
@@ -140,6 +134,7 @@ public class SearchServlet extends HttpServlet {
 	                request.setAttribute("actors", actors);
 	                request.setAttribute("genres", genres);
 	                request.setAttribute("pageNum", pageNum);
+	                request.setAttribute("status", "Success");
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
 	            }else {
@@ -148,22 +143,13 @@ public class SearchServlet extends HttpServlet {
 
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
-	            }
-	    		
-	    		
-
-	    		
+	            }	    		
 	    		statement.close();
 	    		connection.close();
 	    	}
 	        catch (Exception e) 
 	        {
-	    		e.printStackTrace();	
-	    		out.println("<h3> ");
-    			out.println(e.getMessage());
-    			out.println("</h3>");
+	    		e.printStackTrace();
 	    	}
-	        out.println("</body>");
-	        out.println("</html>");
 	    }
 }
