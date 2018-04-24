@@ -16,17 +16,28 @@ public class MovieListing
     private final ArrayList<String> stars;
     private final ArrayList<String> genres;
     
-    public MovieListing(String id, String title, int year, String director, double rating, ArrayList<String> stars, ArrayList<String> genres) 
+    public MovieListing(String id, String title, int year, String director, double rating, String stars, String genres) 
     {
         this.movieId = id;
         this.title = title;
         this.year = year;
         this.director = director;
         this.rating = rating;
-        this.stars = removeDuplicates(stars);
-        this.genres = removeDuplicates(genres);
+        this.stars = removeDuplicates(getArrayList(stars));
+        this.genres = removeDuplicates(getArrayList(genres));
     }
 
+    private ArrayList<String> getArrayList(String listStr)
+    {
+    	String [] temp = listStr.split(", ");
+    	ArrayList<String> result = new ArrayList<String>();
+    	for(String item: temp)
+    	{
+    		result.add(item);
+    	}
+    	return result;
+    }
+    
     private ArrayList<String> removeDuplicates(ArrayList<String> list)
     {
     	ArrayList<String> result = new ArrayList<String>();
