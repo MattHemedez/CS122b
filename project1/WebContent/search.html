@@ -1,64 +1,112 @@
 <!-- This page will be redirected from any url if you are not logged in -->
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Search Fabflix</title>
-</head>
+	<head>
+	    <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="main.css">
+		<meta charset="ISO-8859-1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Fabflix Search</title>
+	</head>
 
-<body>
-	<h2>Search Our Databases</h2>
-	<!-- Disable the default action because our JS function will handle it. -->
-	<form id="login_form" method="GET" action="SearchServlet">
-	    <label><b>Title</b></label>
-	    <input type="text" placeholder="Enter Title" name="title" autofocus>
-	    <br>
-	    <label><b>Year</b></label>
-	    <br>Exact Year<input type="number" min="1000" max="9999" step="1" name="eyear">
-	    <br>Minimum Year<input type="number" min="1000" max="9999" step="1" name="minyear" disabled>Maximum Year<input type="number" min="1000" max="9999" step="1" name="maxyear" disabled>
-	    <br>
-	    <label><b>Director</b></label>
-	    <input type="text" placeholder="Enter Director's Name" name="director">
-	    <br>
-	    <label><b>Star's Name</b></label>
-	    <input type="text" placeholder="Enter Your Celebrity Crush" name="starname">
-	    <br>
-	    <br>
-	    <label><b>Rating Received</b></label>
-	    <br>Exact Rating<input type="number" min="0.1" max="10" step="0.1" name="erating" disabled>
-	    <br>Minimum Rating<input type="number" min="0.1" max="10" step="0.1" name="minrating" disabled>Maximum Rating<input type="number" min="0.1" max="10" step="0.1" name="maxrating" disabled>
-	    <br>
-	    <label><b>Amount of User Votes</b></label>
-	    <br>Exact User Votes<input type="number" min=0 step="1" placeholder="votes" name="epopularity" disabled>
-	    <br>Minimum User Votes<input type="number" min=0 step="1" placeholder="votes" name="minpopularity" disabled>Maximum User Votes<input type="number" min=0 step="1" placeholder="votes" name="maxpopularity" disabled>
-	    <br>
-	    <label><b>Genre</b></label><br>
-	    <input type="checkbox" name="genre1" value="Action" disabled>Action<br>
-  		<input type="checkbox" name="genre2" value="Adult" disabled>Adult<br>
-  		<input type="checkbox" name="genre3" value="Adventure" disabled>Adventure<br>
-  		<input type="checkbox" name="genre4" value="Animation" disabled>Animation<br>
-  		<input type="checkbox" name="genre5" value="Biography" disabled>Biography<br>
-  		<input type="checkbox" name="genre6" value="Comedy" disabled>Comedy<br>
-  		<input type="checkbox" name="genre7" value="Crime" disabled>Crime<br>
-  		<input type="checkbox" name="genre8" value="Documentary" disabled>Documentary<br>
-  		<input type="checkbox" name="genre9" value="Drama" disabled>Drama<br>
-  		<input type="checkbox" name="genre10" value="Family" disabled>Family<br>
-  		<input type="checkbox" name="genre11" value="Fantasy" disabled>Fantasy<br>
-  		<input type="checkbox" name="genre12" value="History" disabled>History<br>
-  		<input type="checkbox" name="genre13" value="Horror" disabled>Horror<br>
-  		<input type="checkbox" name="genre14" value="Music" disabled>Music<br>
-  		<input type="checkbox" name="genre15" value="Musical" disabled>Musical<br>
-  		<input type="checkbox" name="genre16" value="Mystery" disabled>Mystery<br>
-  		<input type="checkbox" name="genre17" value="Reality-TV" disabled>Reality-TV<br>
-  		<input type="checkbox" name="genre18" value="Romance" disabled>Romance<br>
-  		<input type="checkbox" name="genre19" value="Sci-Fi" disabled>Sci-Fi<br>
-  		<input type="checkbox" name="genre20" value="Sport" disabled>Sport<br>
-  		<input type="checkbox" name="genre21" value="Thriller" disabled>Thriller<br>
-  		<input type="checkbox" name="genre22" value="War" disabled>War<br>
-  		<input type="checkbox" name="genre23" value="Western" disabled>Western<br>
-	    <br>
-	    <input type="submit" value="Login">
-	    <input type="reset">
-	</form>
-</body>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-3">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-elements" aria-expanded="false">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand navbar-left" href="index.html">Fabflix   <span class="glyphicon glyphicon-film"></span></a>
+						</div>
+					</div>
+					<div class="col-md-8">
+						<div class="collapse navbar-collapse" id=navbar-elements>
+							<ul class="nav navbar-nav navbar-right">
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Browse<span class="caret"></span></a>
+									<ul class="dropdown-menu">
+										<li class="dropdown-header">Browsing Options</li>
+										<li role="separator" class="divider"></li>
+										<li><a href="search.html">Browse by Movie Title</a></li>
+										<li><a href="search.html">Browse by Genre</a></li>
+									</ul>
+								<li><a href="#">Search</a></li>
+								<li><a href="search.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+								<li>
+									<form id="logout_form" method="post" action="#" >
+										<button type="submit" type="submit" class="btn btn-primary navbar-btn">
+											Sign Out <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+										</button>
+									</form>
+								</li>
+							</ul> 
+						</div>
+					</div>
+					<div class="col-md-1"></div>
+				</div>
+		  	</div>
+		</nav>
+		<h2>Search Our Databases</h2>
+		<!-- Disable the default action because our JS function will handle it. -->
+		<form id="login_form" method="GET" action="SearchServlet">
+		    <label><b>Title</b></label>
+		    <input type="text" placeholder="Enter Title" name="title" autofocus>
+		    <br>
+		    <label><b>Year</b></label>
+		    <br>Exact Year<input type="number" min="1000" max="9999" step="1" name="eyear">
+		    <br>Minimum Year<input type="number" min="1000" max="9999" step="1" name="minyear" disabled>Maximum Year<input type="number" min="1000" max="9999" step="1" name="maxyear" disabled>
+		    <br>
+		    <label><b>Director</b></label>
+		    <input type="text" placeholder="Enter Director's Name" name="director">
+		    <br>
+		    <label><b>Star's Name</b></label>
+		    <input type="text" placeholder="Enter Your Celebrity Crush" name="starname">
+		    <br>
+		    <br>
+		    <label><b>Rating Received</b></label>
+		    <br>Exact Rating<input type="number" min="0.1" max="10" step="0.1" name="erating" disabled>
+		    <br>Minimum Rating<input type="number" min="0.1" max="10" step="0.1" name="minrating" disabled>Maximum Rating<input type="number" min="0.1" max="10" step="0.1" name="maxrating" disabled>
+		    <br>
+		    <label><b>Amount of User Votes</b></label>
+		    <br>Exact User Votes<input type="number" min=0 step="1" placeholder="votes" name="epopularity" disabled>
+		    <br>Minimum User Votes<input type="number" min=0 step="1" placeholder="votes" name="minpopularity" disabled>Maximum User Votes<input type="number" min=0 step="1" placeholder="votes" name="maxpopularity" disabled>
+		    <br>
+		    <label><b>Genre</b></label><br>
+		    <input type="checkbox" name="genre1" value="Action" disabled>Action<br>
+	  		<input type="checkbox" name="genre2" value="Adult" disabled>Adult<br>
+	  		<input type="checkbox" name="genre3" value="Adventure" disabled>Adventure<br>
+	  		<input type="checkbox" name="genre4" value="Animation" disabled>Animation<br>
+	  		<input type="checkbox" name="genre5" value="Biography" disabled>Biography<br>
+	  		<input type="checkbox" name="genre6" value="Comedy" disabled>Comedy<br>
+	  		<input type="checkbox" name="genre7" value="Crime" disabled>Crime<br>
+	  		<input type="checkbox" name="genre8" value="Documentary" disabled>Documentary<br>
+	  		<input type="checkbox" name="genre9" value="Drama" disabled>Drama<br>
+	  		<input type="checkbox" name="genre10" value="Family" disabled>Family<br>
+	  		<input type="checkbox" name="genre11" value="Fantasy" disabled>Fantasy<br>
+	  		<input type="checkbox" name="genre12" value="History" disabled>History<br>
+	  		<input type="checkbox" name="genre13" value="Horror" disabled>Horror<br>
+	  		<input type="checkbox" name="genre14" value="Music" disabled>Music<br>
+	  		<input type="checkbox" name="genre15" value="Musical" disabled>Musical<br>
+	  		<input type="checkbox" name="genre16" value="Mystery" disabled>Mystery<br>
+	  		<input type="checkbox" name="genre17" value="Reality-TV" disabled>Reality-TV<br>
+	  		<input type="checkbox" name="genre18" value="Romance" disabled>Romance<br>
+	  		<input type="checkbox" name="genre19" value="Sci-Fi" disabled>Sci-Fi<br>
+	  		<input type="checkbox" name="genre20" value="Sport" disabled>Sport<br>
+	  		<input type="checkbox" name="genre21" value="Thriller" disabled>Thriller<br>
+	  		<input type="checkbox" name="genre22" value="War" disabled>War<br>
+	  		<input type="checkbox" name="genre23" value="Western" disabled>Western<br>
+		    <br>
+		    <input type="submit" value="Submit">
+		    <input type="reset">
+		</form>
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="logout.js"></script>
+	</body>
 </html>
