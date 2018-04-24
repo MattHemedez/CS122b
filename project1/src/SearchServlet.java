@@ -50,10 +50,12 @@ public class SearchServlet extends HttpServlet {
 	    		// prepare query
 	    	
 	    		
-	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, GROUP_CONCAT(s.name SEPARATOR ', ') AS stars, GROUP_CONCAT(g.name SEPARATOR ', ') AS genres\r\n" + 
-	    				"	FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm\r\n" + 
-	    				"    WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND"; 
-
+	    		
+	    		
+	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, GROUP_CONCAT(s.name SEPARATOR ',') AS stars, GROUP_CONCAT(g.name SEPARATOR ',') AS genres " + 
+	    				"FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm " + 
+	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND "; 
+	 
 	    		
     			if(title != null && !title.equals("")) 
     				query += "m.title LIKE '%" + title + "%' AND ";
@@ -80,7 +82,6 @@ public class SearchServlet extends HttpServlet {
 	    				+ "LIMIT 20 "
 	    				+ "OFFSET 0;";
 	    		
-	    		out.println(query);
 	    		ResultSet resultSet = statement.executeQuery(query);
 	    		
 	    		
@@ -93,24 +94,22 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
+	    			movieTitles.add(movieName);
 	    			actors.put(movieName, new HashSet<String>());
+	    			
 	    			StringTokenizer st = new StringTokenizer(resultSet.getString("stars"),",");
+	    			
 	    			while(st.hasMoreTokens()) {
 	    				actors.get(movieName).add(st.nextToken());
 	    			}
 	    			
 	    		}
-    			
+    		
 	    		
 	    		
 	    		
 	    		
-	    		
-	    		
-	    		
-	    		
-	    		
-	    		
+	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
 	    			
 	                request.setAttribute("movies", movieTitles);
