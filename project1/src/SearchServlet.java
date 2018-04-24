@@ -60,11 +60,7 @@ public class SearchServlet extends HttpServlet {
 	    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
 	    				   				ResultSet.CONCUR_READ_ONLY);
 	    		// prepare query
-	    	
-	    		
-	    		
-	    		
-	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, GROUP_CONCAT(s.name SEPARATOR ',') AS stars, GROUP_CONCAT(g.name SEPARATOR ',') AS genres " + 
+	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, r.numVotes, GROUP_CONCAT(DISTINCT s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + 
 	    				"FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm " + 
 	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND "; 
 	 
