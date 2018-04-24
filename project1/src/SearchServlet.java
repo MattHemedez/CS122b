@@ -44,7 +44,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://localhost/moviedb";
+	        String loginUrl = "jdbc:mysql://ec2-18-222-68-209.us-east-2.compute.amazonaws.com/moviedb";
     
 	        PrintWriter out = response.getWriter();
 	        out.println("<html>");
@@ -96,11 +96,16 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		ResultSet resultSet = statement.executeQuery(query);
 	    		
+	    		String url =request.getScheme() + "://" +   // "http" + "://
+	    	             request.getServerName() +       // "myhost"
+	    	             ":" +                           // ":"
+	    	             request.getServerPort() +       // "8080"
+	    	             request.getRequestURI() +       // "/people"
+	    	             "?" +                           // "?"
+	    	             request.getQueryString();
 	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
-	    		
-	    		
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
 	    		
 	    		
@@ -129,7 +134,7 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
-	    			
+	    			request.setAttribute("url", url);
 	                request.setAttribute("movies", movieTitles);
 	                request.setAttribute("query", query);
 	                request.setAttribute("actors", actors);
