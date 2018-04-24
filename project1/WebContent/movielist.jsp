@@ -17,12 +17,16 @@
     		
     		
     	ArrayList<String> test = (ArrayList<String>) request.getAttribute("movies");
+    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
     	
+    	
+    	out.print("<h2> " + request.getAttribute("query") + "</h2>");
     	for(int i= 0; i<test.size(); ++i){
         	out.print("<h2> " + test.get(i) + " </h2>");
+        	out.print("<p>" + actors.get(test.get(i)) + "</p>");
     	}
     	
-    	out.print("<h2> " + "TEST" + " </h2>");
+    	
     	%>
 </body>
 </html>

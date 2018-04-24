@@ -32,7 +32,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://ec2-18-188-198-172.us-east-2.compute.amazonaws.com:3306/moviedb";
+	        String loginUrl = "jdbc:mysql://ec2-18-222-68-209.us-east-2.compute.amazonaws.com:3306/moviedb";
     
 	        PrintWriter out = response.getWriter();
 	        out.println("<html>");
@@ -50,51 +50,72 @@ public class SearchServlet extends HttpServlet {
 	    		// prepare query
 	    	
 	    		
-	    		String query = "SELECT DISTINCT m.title "
-	    				     + "FROM movies AS m, stars AS s, stars_in_movies as SM "
-	    				     + "WHERE m.id = SM.movieId AND SM.starId = s.id AND ";
-    		
-    			if(title != null) 
-    			{
+	    		String query ="SELECT m.id, m.title, m.year, m.director, r.rating, GROUP_CONCAT(s.name SEPARATOR ', ') AS stars, GROUP_CONCAT(g.name SEPARATOR ', ') AS genres\r\n" + 
+	    				"	FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm\r\n" + 
+	    				"    WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND"; 
+
+	    		
+    			if(title != null && !title.equals("")) 
     				query += "m.title LIKE '%" + title + "%' AND ";
-    			}
-    			else if(year != null) 
-    			{
+    			
+    			if(year != null && !year.equals("")) 
     				query += "m.year ='" + year + "' AND ";
-    			}
-    			else if(director != null) 
-    			{
+
+    			if(director != null && !director.equals("")) 
     				query += "m.director LIKE '%" + director + "%' AND ";	
-    			}
-    			else if(starname != null) 
-    			{	
+
+    			if(starname != null && !starname.equals("")) {
     				String delim = "[ ]+";
     				String[] parsed = starname.split(delim);
     				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1];
     			}
-	    		
+
 	    		if(query.endsWith("AND ")) 
 	    		{
 	    			query = query.substring(0, query.length() - 4);
 	    		}
 	    		
-	    		query += ";";
+	    		query += "GROUP BY m.id "
+	    				+ "ORDER BY m.year ASC "
+	    				+ "LIMIT 20 "
+	    				+ "OFFSET 0;";
 	    		
-	    		
-	    		
+	    		out.println(query);
 	    		ResultSet resultSet = statement.executeQuery(query);
 	    		
+	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
+	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
+	    		
+	    		
+	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
+	    		
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
-	    			movieTitles.add(movieName);
+	    			actors.put(movieName, new HashSet<String>());
+	    			StringTokenizer st = new StringTokenizer(resultSet.getString("stars"),",");
+	    			while(st.hasMoreTokens()) {
+	    				actors.get(movieName).add(st.nextToken());
+	    			}
+	    			
 	    		}
     			
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
+	    		
 	    		if (movieTitles.size()>0) {
 	    			
 	                request.setAttribute("movies", movieTitles);
-
+	                request.setAttribute("query", query);
+	                request.setAttribute("actors", actors);
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
 	            }else {
