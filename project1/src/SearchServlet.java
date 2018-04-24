@@ -30,6 +30,17 @@ public class SearchServlet extends HttpServlet {
 	        String director = request.getParameter("director");
 	        String starname = request.getParameter("starname");
 	        String limit = request.getParameter("limit");
+	        String pageNum = request.getParameter("pagenum");
+	        String offset = ""; 
+	        if(limit == null)
+	        	limit = "10";
+	        if(pageNum == null)
+	        {
+	        	pageNum = "1";
+	        	offset = "0";
+	        }
+	        else
+	        	offset += ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(limit));
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
@@ -81,7 +92,7 @@ public class SearchServlet extends HttpServlet {
 	    		query += "GROUP BY m.id "
 	    				+ "ORDER BY m.year ASC "
 	    				+ "LIMIT " + limit + " "
-	    				+ "OFFSET 0;";
+	    				+ "OFFSET " + offset + ";";
 	    		
 	    		ResultSet resultSet = statement.executeQuery(query);
 	    		
@@ -123,6 +134,7 @@ public class SearchServlet extends HttpServlet {
 	                request.setAttribute("query", query);
 	                request.setAttribute("actors", actors);
 	                request.setAttribute("genres", genres);
+	                request.setAttribute("pageNum", pageNum);
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
 	            }else {
