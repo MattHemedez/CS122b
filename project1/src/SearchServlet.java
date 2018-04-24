@@ -33,7 +33,7 @@ public class SearchServlet extends HttpServlet {
 	        String offset = ""; 
 	        if(limit == null)
 	        	limit = "10";
-	        if(pageNum == null)
+	        if(pageNum == null || Integer.parseInt(pageNum) <= 0)
 	        {
 	        	pageNum = "1";
 	        	offset = "0";

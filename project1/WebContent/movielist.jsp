@@ -19,8 +19,10 @@
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
+	    	int totalPages = (int)request.getAttribute("totalPages");
 	    	String url = (String) request.getAttribute("url");
-	    	url += "&pagenum=";
+	    	if(!url.contains("&pagenum="))
+	    		url += "&pagenum=";
 	    %>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
@@ -62,29 +64,38 @@
 		  	</div>
 		</nav>
 		
-		<nav aria-label="Bottom Page navigation">
+		<nav aria-label="Upper Page navigation">
 			<ul class="pagination">
 				<li>
-					<a href="#" aria-label="Previous">
+					<a href="<%=url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" +1%>" aria-label="Previous">
 						<span aria-hidden="true">&laquo;</span>
 					</a>
 				</li>
 				<%
 					int pageIndex = pageNum + -2;
 					String link = "";
+					String liClass = "";
 					for(int i = -2; i < 3; ++i)
 					{
+						liClass = "";
 						if(pageIndex <= 0)
 							pageIndex = 1;
-						if(pageIndex + i == pageNum)
+						if(pageIndex == pageNum)
+						{
+							liClass = " class='active'";
 							link = "#";
+						}
+						else if(pageIndex <= totalPages)
+							link = url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" +pageIndex;
+						else
+							liClass = " class='disabled'";
 				%>
 				
 				
-				<li><a href="<%=url.substring(0,url.indexOf("&pagenum="))+"&pagenum=" +pageIndex%>"><%out.print(pageIndex);%></a></li>
+				<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
 				<%pageIndex += 1;}%>
 				<li>
-					<a href="#" aria-label="Next">
+					<a href="<%=url.substring(0,url.indexOf("&pagenum=")) + "&pagenum=" + totalPages%>" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					</a>	
 				</li>
