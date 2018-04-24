@@ -96,11 +96,17 @@ public class SearchServlet extends HttpServlet {
 	    			String movieName = resultSet.getString("title");
 	    			movieTitles.add(movieName);
 	    			actors.put(movieName, new HashSet<String>());
+	    			genres.put(movieName, new HashSet<String>());
 	    			
-	    			StringTokenizer st = new StringTokenizer(resultSet.getString("stars"),",");
+	    			StringTokenizer actorsST = new StringTokenizer(resultSet.getString("stars"),",");
+	    			StringTokenizer genreST = new StringTokenizer(resultSet.getString("genres"),",");
+
+	    			while(actorsST.hasMoreTokens()) {
+	    				actors.get(movieName).add(actorsST.nextToken());
+	    			}
 	    			
-	    			while(st.hasMoreTokens()) {
-	    				actors.get(movieName).add(st.nextToken());
+	    			while(genreST.hasMoreTokens()) {
+	    				genres.get(movieName).add(genreST.nextToken());
 	    			}
 	    			
 	    		}
@@ -115,6 +121,7 @@ public class SearchServlet extends HttpServlet {
 	                request.setAttribute("movies", movieTitles);
 	                request.setAttribute("query", query);
 	                request.setAttribute("actors", actors);
+	                request.setAttribute("genres", genres);
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);
 	            }else {
