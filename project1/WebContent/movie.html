@@ -1,0 +1,65 @@
+<!-- This example is following frontend and backend separation.
+
+    This .html performs two steps:
+    1. Create a html template skeleton, with all the elements defined (some left empty) and named with ids.
+    2. Load single-star.js to populate the data into empty elements.
+    -->
+
+<!doctype html>
+<html lang="en">
+	<head>
+	    <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="main.css">
+		<meta charset="ISO-8859-1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	    <title>Movie</title>
+	</head>
+	<body>
+		<h1>Single Movie Page</h1>
+		
+		<!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
+		<!-- single-star.js will find this html element by it's id "star_info" -->
+		<h3 id="movie_info"></h3>
+		<table id=star_table class="table table-striped">
+		    <thead>
+		    <tr>
+		        <th>Star Name</th>
+		        <th>
+		    </tr>
+		    </thead>
+		
+		    <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
+		    <!-- single-star.js will find this html element by it's id "movie_table_body" -->
+		    <tbody id=star_table_body></tbody>
+		</table>
+		<table id=genre_table class="table table-striped">
+		    <thead>
+		    <tr>
+		        <th>Genre Name</th>
+		        <th>
+		    </tr>
+		    </thead>
+		
+		    <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
+		    <!-- single-star.js will find this html element by it's id "movie_table_body" -->
+		    <tbody id=genre_table_body></tbody>
+		</table>
+		
+		<!-- Load jQuery and Bootstrap JS -->
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="logout.js"></script>
+		
+		<!-- Load our own JS file -->
+		<!-- The path is relative to single-star.html, since these two files are in the same directory -->
+		<!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
+		     otherwise the url is relative to the root path-->
+		<script src="movie.js"></script>
+	</body>
+
+
+</html>
