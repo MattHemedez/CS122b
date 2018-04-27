@@ -18,9 +18,12 @@
 	    	ArrayList<String> movieList = (ArrayList<String>) request.getAttribute("movies");
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
+	    	String query = (String) request.getAttribute("query");
+
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
 	    	int totalPages = (int)request.getAttribute("totalPages");
 	    	String url = ((String) request.getAttribute("url")).replaceAll("&pagenum=[^&]*", "") + "&pagenum=";
+	    	String baseUrl = (String) request.getAttribute("baseUrl");
 	    	String firstLink = "";
 	    	if(pageNum == 1)
 	    		firstLink = "#";
@@ -53,7 +56,7 @@
 										<li class="dropdown-header">Browsing Options</li>
 										<li role="separator" class="divider"></li>
 										<li><a href="search.html">Browse by Movie Title</a></li>
-										<li><a href="search.html">Browse by Genre</a></li>
+										<li><a href="genrebrowse.html">Browse by Genre</a></li>
 									</ul>
 								<li><a href="search.html">Search</a></li>
 								<li><a href="search.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
@@ -116,7 +119,7 @@
 	    %>
 	    		<div class = "row">
 	    			<div class="col-sm-4" style="background-color:yellow;">
-	    				<% out.print("<h4> " + movieList.get(i) + " </h4>"); %>  <!-- DISPLAYS THE MOVIE NAME -->
+	    				<% out.print("<h4>" + movieList.get(i) + " </h4>"); %>  <!-- DISPLAYS THE MOVIE NAME -->
 	    			</div>
 	    			<div class="col-sm-8" style="background-colo:pink">
 	        			<% out.println("<p>" + actors.get(movieList.get(i)) + "</p>");

@@ -18,7 +18,20 @@ import com.google.gson.JsonObject;
 public class SearchServlet extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
 
-
+	 	public String getGenre(HttpServletRequest request) {
+	 		String genre = "";
+	 		ArrayList<String> genreTypes = new ArrayList<String>(Arrays.asList("action", "adventure", "animation", "comedy", "crime", "drama", "fantasy",
+	 															"horror", "mystery", "romance", "sci-fi", "thriller"));
+	 		for(int i=0; i<genreTypes.size(); ++i) {
+	 			if(request.getParameter(genreTypes.get(i)) != null) {
+	 				genre = request.getParameter(genreTypes.get(i));
+	 				return genre;
+	 			}
+	 		}
+	 		
+	 		return genre;
+	 	}
+	 	
 	    /**
 	     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	     */
@@ -30,6 +43,14 @@ public class SearchServlet extends HttpServlet {
 	        String starname = request.getParameter("starname");
 	        String limit = request.getParameter("limit");
 	        String pageNum = request.getParameter("pagenum");
+	        String genre = getGenre(request);
+
+	        PrintWriter out = response.getWriter();
+	        out.println("<html>");
+	        out.println("<head><title>Movie Search</title></head>");
+	        out.println("<body>");
+    		
+	        
 	        String offset = ""; 
 	        if(limit == null)
 	        	limit = "10";
@@ -43,7 +64,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://localhost/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://ec2-18-188-85-53.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
 	        
 	        try 
 	        {
@@ -54,9 +75,10 @@ public class SearchServlet extends HttpServlet {
 	    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
 	    				   				ResultSet.CONCUR_READ_ONLY);
 	    		// prepare query
-	    		String query ="FROM movies AS m, stars AS s, stars_in_movies AS SM, ratings AS r, genres AS g, genres_in_movies AS gm " + 
-	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND ";
-			if(title != null && !title.equals("")) 
+	    		String query ="FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating " + 
+	    				"FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm " + 
+	    				"WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND ";
+	    		if(title != null && !title.equals("")) 
     				query += "m.title LIKE '%" + title + "%' AND ";
     			
     			if(year != null && !year.equals("")) 
@@ -64,25 +86,52 @@ public class SearchServlet extends HttpServlet {
 
     			if(director != null && !director.equals("")) 
     				query += "m.director LIKE '%" + director + "%' AND ";	
+    			
+    			if(genre != null && !genre.equals("")) {
+    				query += "g.name LIKE '%" +genre + "%' AND ";
+    			}
 
     			if(starname != null && !starname.equals("")) {
     				String delim = "[ ]+";
     				String[] parsed = starname.split(delim);
     				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1];
     			}
+    			
+    			
+
+	    		
 
 	    		if(query.endsWith("AND ")) 
 	    		{
-	    			query = query.substring(0, query.length() - 4);
+	    			query = query.substring(0, query.length() - 4) + " ";
+	    			
 	    		}
+
+		
 	    		
-	    		String selectQuery1 = "SELECT m.id, m.title, m.year, m.director, r.rating, r.numVotes, GROUP_CONCAT(DISTINCT s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + query;
-	    		String selectQuery2 = "SELECT COUNT(DISTINCT m.id) AS total " + query + ";";
+	    		String selectQuery1 = "SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + query;
+	    		String selectQuery2 = "SELECT COUNT(DISTINCT m.id) AS total " + query + ") as m;";
+		
 	    		
-	    		selectQuery1 += "GROUP BY m.id "
-	    				+ "ORDER BY m.year ASC "
-	    				+ "LIMIT " + limit + " "
-	    				+ "OFFSET " + offset + ";";
+	    		
+	    		
+	    		selectQuery1 += " ORDER BY m.id ASC " + 
+	    				"LIMIT " + limit + " " +
+	    				"OFFSET " + offset + ") AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm " + 
+	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND g.id = gm.genreId AND gm.movieId = m.id " + 
+	    				"GROUP BY m.id " + 
+	    				"ORDER BY m.director ASC;";
+	    		
+	    		
+	    		out.println("<h1>" + query+ "</h1>");
+	    		out.println("<h1>" + "<br>" +  selectQuery1+ "</h1>");
+	    		out.println("<h1>" + "<br>" + selectQuery2+ "</h1>");
+	    		
+	    		out.println("<h1>" + "<br>" + genre+ "</h1>");
+
+        		out.println("</body>");
+        		out.println("</html>");
+	    		
 	    		
 	    		boolean hasResultSets = statement.execute(selectQuery2 + selectQuery1);
 	    		ResultSet resultSet = statement.getResultSet();
@@ -105,6 +154,12 @@ public class SearchServlet extends HttpServlet {
 	    	             request.getRequestURI() +       // "/people"
 	    	             "?" +                           // "?"
 	    	             request.getQueryString();
+	    		
+	    		
+	    		String baseUrl =request.getScheme() + "://" +   // "http" + "://
+	    	             request.getServerName() +       // "myhost"
+	    	             ":" +                           // ":"
+	    	             request.getServerPort();      // "8080"
 	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
@@ -130,9 +185,9 @@ public class SearchServlet extends HttpServlet {
 	    			
 	    		}
     		
-	    		request.setAttribute("query", query);
 	    		if (movieTitles.size()>0) {
 	    			request.setAttribute("url", url);
+	    			request.setAttribute("baseUrl", baseUrl);
 	                request.setAttribute("movies", movieTitles);
 	                request.setAttribute("query", query);
 	                request.setAttribute("actors", actors);
