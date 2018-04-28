@@ -4,20 +4,25 @@
 <%@ page import="java.io.*" %>
 <%@ page import="java.net.*" %>
 <%@page import="java.util.ArrayList" %>
+<%@page import="java.net.URL" %>
+<%@page import="com.google.gson.JsonObject" %>
+<%@page import="com.google.gson.JsonParser" %>
 
 <html>
 	<head>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="main.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<style><%@include file="movielist.css"%></style>
+		
 		<title>FabFlix Movie Listings</title>
 	</head>
-	<body style="body {padding-top: 100px;}">
+	<body style="body {padding-top: 100px;} background-color:white" >
 		<%
 	    	ArrayList<String> movieList = (ArrayList<String>) request.getAttribute("movies");
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
+	    	HashMap<String,String> movieID = (HashMap<String,String>) request.getAttribute("movieID");
 	    	String query = (String) request.getAttribute("query");
 
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
@@ -113,31 +118,84 @@
 				</li>
 			</ul>
 		</nav>
-		<div class="container-fluid">
+		
+		
+        <div class="album py-5 bg-light">
+        	<div class="container">
+     	    	<div class='row'>
+     	    	
+     	    	
+     	    	
+     	    	
+        			
 		<%
 	    	for(int i= 0; i<movieList.size(); ++i){
-	    %>
-	    		<div class = "row">
-	    			<div class="col-sm-4" style="background-color:yellow;">
-	    				<% 
-						// Need to add movie ID to the HREF
-	    				out.print("<h4>" + movieList.get(i) + " </h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
+	    %>	
+	    			
+	    <% 
+		    if(i%2 == 0 && i != 0){
+	    		out.print("</div><div class='row'>");
+	    	}
+	    	String imdbID =movieID.get(movieList.get(i));
+			String movieURL =  baseUrl + "movie.html?id=" + imdbID;
+	    	out.print("<h4><a href='"+ movieURL+"'>" + movieList.get(i) + "</a></h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
+			String movieGenres = "| ";
+			for(String g: genres.get(movieList.get(i))){
+				movieGenres+=g+" | ";
+			}
+			out.print("<p style=\"font-size:10px\">" + movieGenres + "</p>"); //<!-- DISPLAYS THE GENRES HERE --> 
+	    	// Trying API Calls to OMDB CALL BY IMDB ID
+    		// http://www.omdbapi.com/?i=tt0094859&apikey=d4e302c3 EXAMPLE KEY
+	    	String base = "http://www.omdbapi.com/?i=" + imdbID;
+	    	String myKey = "&apikey=d4e302c3";
+	    	String charset = "UTF-8";
+	    	// Opening connection and getting response to parse. Grab the movieURL and plot only to use
+	    	URLConnection connection = new URL(base+myKey).openConnection();
+	    	InputStream apiResponse = connection.getInputStream();
+	    	JsonParser jsonParser = new JsonParser();
+	    	JsonObject jsonObject = (JsonObject)jsonParser.parse(new InputStreamReader(apiResponse, "UTF-8"));
+	    	String movieUrl =  jsonObject.get("Poster").getAsString();
+	    	String plot = jsonObject.get("Plot").getAsString();
+	    	
+		%>  
+    	
+
+	    	<div class="col-sm-3">
 	    				
-	    				%>  
-	    			</div>
-	    			<div class="col-sm-8" style="background-colo:pink">
+             	<div class="card mb-4 box-shadow">
+                	<img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"not-found.png")%> >
+                		<div class="card-body">
+                  			<p class="card-text"><%="<br />" + plot %></p>
+                  				<div class="d-flex justify-content-between align-items-center">
+                   					<div class="btn-group">
+                      					<button type="button" class="btn btn-sm btn-outline-secondary"><a href=<%=movieURL %>>View</a></button>
+                      					                      					
+                      					
+                    				</div>
+                    			</div>
+                    	</div>
+                 </div>
+	    	</div>
+	    	
+	    		<div class="col-sm-3" >
 	        			<% 
+	        			out.print("<h3 style='color:red'>FEATURING</h3>");
 						for(String unparsed: actors.get(movieList.get(i))){
 			    			StringTokenizer actorsST = new StringTokenizer(unparsed,":"); // starID:Name
-		        			out.print("<p> <a href='"+ baseUrl+"star.html?id=" + actorsST.nextToken()+"'>" + actorsST.nextToken() + "</a></p>");
-
+		        			out.print("<p> <a href='"+ baseUrl+"star.html?id=" + actorsST.nextToken()+"'>" + actorsST.nextToken() + "</a></p>");   //<!-- DISPLAYS THE ACTORS HERE --> 
 						}
 
-	        			out.print("<p>" + genres.get(movieList.get(i)) + "</p>"); //<!-- DISPLAYS THE ACTORS AND GENRES NAME --> 
 
-	        			
 	        			%> <!-- DISPLAYS THE ACTORS AND GENRES NAME -->
-	        			</div></div> <%}%>
+	        				
+                </div>
+             
+	 	<%
+	 		}
+	 	%>
+	       		</div> 		
+	        	
+	       </div>	
 	    </div>
 	    
 	    <nav aria-label="Upper Page navigation">

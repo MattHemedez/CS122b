@@ -1,4 +1,17 @@
+@charset "ISO-8859-1";
+
+
+/* main.css */
 body 
 { 
-	padding-top: 50px; 
+	padding-top: 50px;
+	background-image: url("indexbg2.png");
+ 	background-size: cover;
+}
+
+.sitenameText{
+	top: 30%; left: 46%; 
+	position: absolute;
+	color:white;
+	font-family:Verdana
 }

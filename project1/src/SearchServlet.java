@@ -166,10 +166,14 @@ public class SearchServlet extends HttpServlet {
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
+	    		HashMap<String,String> movieID = new HashMap<String, String>();
+	    		
+	    		
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
 	    			movieTitles.add(movieName);
+	    			movieID.put(movieName, resultSet.getString("id"));
 	    			actors.put(movieName, new HashSet<String>());
 	    			genres.put(movieName, new HashSet<String>());
 	    			
@@ -187,6 +191,7 @@ public class SearchServlet extends HttpServlet {
 	    		}
     		
 	    		if (movieTitles.size()>0) {
+	    			request.setAttribute("movieID", movieID);
 	    			request.setAttribute("url", url);
 	    			request.setAttribute("baseUrl", baseUrl);
 	                request.setAttribute("movies", movieTitles);
