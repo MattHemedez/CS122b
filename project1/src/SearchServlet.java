@@ -64,7 +64,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://ec2-18-188-85-53.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://ec2-18-218-101-189.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
 	        
 	        try 
 	        {
@@ -126,7 +126,6 @@ public class SearchServlet extends HttpServlet {
 	    		out.println("<h1>" + query+ "</h1>");
 	    		out.println("<h1>" + "<br>" +  selectQuery1+ "</h1>");
 	    		out.println("<h1>" + "<br>" + selectQuery2+ "</h1>");
-	    		
 	    		out.println("<h1>" + "<br>" + genre+ "</h1>");
 
         		out.println("</body>");
@@ -159,11 +158,13 @@ public class SearchServlet extends HttpServlet {
 	    		String baseUrl =request.getScheme() + "://" +   // "http" + "://
 	    	             request.getServerName() +       // "myhost"
 	    	             ":" +                           // ":"
-	    	             request.getServerPort();      // "8080"
+	    	             request.getServerPort()+        // "8080"
+	    	             request.getRequestURI();        // "/people"
+	    		
+	    		baseUrl = baseUrl.substring(0,baseUrl.length()-13);
 	    		
 	    		ArrayList<String> movieTitles = new ArrayList<String>();
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
-
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
 	    		
 	    		while(resultSet.next()) {

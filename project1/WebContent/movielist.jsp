@@ -119,11 +119,24 @@
 	    %>
 	    		<div class = "row">
 	    			<div class="col-sm-4" style="background-color:yellow;">
-	    				<% out.print("<h4>" + movieList.get(i) + " </h4>"); %>  <!-- DISPLAYS THE MOVIE NAME -->
+	    				<% 
+						// Need to add movie ID to the HREF
+	    				out.print("<h4>" + movieList.get(i) + " </h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
+	    				
+	    				%>  
 	    			</div>
 	    			<div class="col-sm-8" style="background-colo:pink">
-	        			<% out.println("<p>" + actors.get(movieList.get(i)) + "</p>");
-	        			out.print("<p>" + genres.get(movieList.get(i)) + "</p>");%> <!-- DISPLAYS THE ACTORS AND GENRES NAME -->
+	        			<% 
+						for(String unparsed: actors.get(movieList.get(i))){
+			    			StringTokenizer actorsST = new StringTokenizer(unparsed,":"); // starID:Name
+		        			out.print("<p> <a href='"+ baseUrl+"star.html?id=" + actorsST.nextToken()+"'>" + actorsST.nextToken() + "</a></p>");
+
+						}
+
+	        			out.print("<p>" + genres.get(movieList.get(i)) + "</p>"); //<!-- DISPLAYS THE ACTORS AND GENRES NAME --> 
+
+	        			
+	        			%> <!-- DISPLAYS THE ACTORS AND GENRES NAME -->
 	        			</div></div> <%}%>
 	    </div>
 	    
