@@ -5,6 +5,10 @@
 body 
 { 
 	padding-top: 50px;
+	
+}
+
+body.index{
 	background-image: url("indexbg2.png");
  	background-size: cover;
 }
@@ -14,4 +18,15 @@ body
 	position: absolute;
 	color:white;
 	font-family:Verdana
+}
+
+.input-group.input-group-unstyled input.form-control{
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+.input-group-unstyled .input-group-addon {
+    border-radius: 4px;
+    border: 0px;
+    background-color: transparent;
 }

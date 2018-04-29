@@ -4,6 +4,7 @@
 @media (min-width: 992px) {
   body {
     padding-top: 56px;
+    font-family: Verdana;
   }
 }
 
@@ -23,4 +24,8 @@
 
 .card-text {
   font-size: 100%;
+}
+
+#ratings{
+	font-size: 16px;
 }

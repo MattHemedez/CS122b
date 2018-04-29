@@ -64,7 +64,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://ec2-18-218-101-189.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://ec2-18-219-184-119.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
 	        
 	        try 
 	        {
@@ -167,13 +167,19 @@ public class SearchServlet extends HttpServlet {
 	    		HashMap<String, HashSet<String>> actors = new HashMap<String, HashSet<String>>();
 	    		HashMap<String, HashSet<String>> genres = new HashMap<String, HashSet<String>>();
 	    		HashMap<String,String> movieID = new HashMap<String, String>();
-	    		
-	    		
+	    		HashMap<String,String> movieRating = new HashMap<String, String>();
+	    		HashMap<String,String> movieDirector = new HashMap<String,String>();
+	    		HashMap<String,String> movieYear = new HashMap<String,String>();
+
 	    		
 	    		while(resultSet.next()) {
 	    			String movieName = resultSet.getString("title");
 	    			movieTitles.add(movieName);
 	    			movieID.put(movieName, resultSet.getString("id"));
+	    			movieRating.put(movieName, resultSet.getString("rating"));
+	    			movieDirector.put(movieName, resultSet.getString("Director"));
+	    			movieYear.put(movieName, resultSet.getString("year"));
+	    			
 	    			actors.put(movieName, new HashSet<String>());
 	    			genres.put(movieName, new HashSet<String>());
 	    			
@@ -191,6 +197,9 @@ public class SearchServlet extends HttpServlet {
 	    		}
     		
 	    		if (movieTitles.size()>0) {
+	    			request.setAttribute("movieYear", movieYear);
+	    			request.setAttribute("movieDirector", movieDirector);
+	    			request.setAttribute("movieRating", movieRating);
 	    			request.setAttribute("movieID", movieID);
 	    			request.setAttribute("url", url);
 	    			request.setAttribute("baseUrl", baseUrl);
