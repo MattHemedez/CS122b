@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
   `movieId` VARCHAR(10) NOT NULL,
   `customerId` INT(11) NOT NULL,
   `quantity` INT NULL,
+  PRIMARY KEY (`movieID`, 'customerId')
   INDEX `customerId_idx` (`customerId` ASC),
   INDEX `movieId_idx` (`movieId` ASC),
   CONSTRAINT `movieId5`
