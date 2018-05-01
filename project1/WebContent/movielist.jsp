@@ -12,10 +12,9 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="main.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="movielist.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<style><%@include file="movielist.css"%></style>
-		
 		<title>FabFlix Movie Listings</title>
 	</head>
 	<body style="body {padding-top: 100px;} background-color:white" >
@@ -147,7 +146,7 @@
 				String movieURL =  baseUrl + "movie.html?id=" + imdbID;
 		    	out.print("<h4><a href='"+ movieURL+"'>" + movieList.get(i) + "</a> ("+movieYear.get(movieList.get(i))+ ")</h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
 				String movieGenres = "| ";
-				for(String g: genres.get(movieList.get(i))){
+				for(String g: genres.get(movieList.get(i))){	
 					movieGenres+=g+" | ";
 				}
 				out.print("<p style=\"font-size:10px\"><span>" + movieGenres+"</span><span id='ratings'>&#9733 "+movieRating.get(movieList.get(i)) + "</span></p>"); //<!-- DISPLAYS THE GENRES/RATINGS --> 
