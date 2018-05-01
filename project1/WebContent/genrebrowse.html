@@ -5,10 +5,10 @@
 <title>Browse Movies by Genre</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="main.css">
+	<link rel="stylesheet" type="text/css" href="genrebrowse.css">
 
 	
 	</head>
-	
 	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
@@ -49,21 +49,29 @@
 				</div>
 		  	</div>
 		</nav>
-<h1> Browse Popular Genres</h1>
-
+<h1> Browse Popular Genres</h1> 
 <form id="movieGenres" method="GET" action= "SearchServlet">
-	<button type="submit" name="action" value="action" style="background: url(action.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="adventure" value="adventure" style="background: url(adventure.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="animation" value="animation" style="background: url(animation.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="comedy" value="comedy" style="background: url(comedy.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="crime" value="crime" style="background: url(crime.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="drama" value="drama" style="background: url(drama.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="fantasy" value="fantasy" style="background: url(fantasy.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="horror" value="horror" style="background: url(horror.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="mystery" value="mystery" style="background: url(mystery.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="romance" value="romance" style="background: url(romance.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="sci-fi" value="sci-fi" style="background: url(sci-fi.jpg); width:233px; height:128px; border:none" />
-	<button type="submit" name="thriller" value="thriller" style="background: url(thriller.jpg); width:233px; height:128px; border:none" />
+	<button type="submit" name="genre" value="action" style="background: url(imgs/genres/action.jpg);background-size: cover;"><h2><span class="label label-default">Action</span></h2></button>
+	<button type="submit" name="genre" value="adult" style="background: url(imgs/genres/adult.png);background-size: cover;"><h2><span class="label label-default">Adult</span></h2></button>
+	<button type="submit" name="genre" value="adventure" style="background: url(imgs/genres/adventure.jpg);background-size: cover;"><h2><span class="label label-default">Adventure</span></h2></button>
+	<button type="submit" name="genre" value="animation" style="background: url(imgs/genres/animation.jpg);background-size: cover;"><h2><span class="label label-default">Animation</span></h2></button>
+	<button type="submit" name="genre" value="comedy" style="background: url(imgs/genres/comedy.jpg);background-size: cover;"><h2><span class="label label-default">Comedy</span></h2></button>
+	<button type="submit" name="genre" value="crime" style="background: url(imgs/genres/crime.jpg);background-size: cover;"><h2><span class="label label-default">Crime</span></h2></button>
+	<button type="submit" name="genre" value="documentary" style="background: url(imgs/genres/documentary.jpg);background-size: cover;"><h2><span class="label label-default">Documentary</span></h2></button>
+	<button type="submit" name="genre" value="drama" style="background: url(imgs/genres/drama.jpg);background-size: cover;"><h2><span class="label label-default">Drama</span></h2></button>
+	<button type="submit" name="genre" value="family" style="background: url(imgs/genres/family.jpg);background-size: cover;"><h2><span class="label label-default">Family</span></h2></button>
+	<button type="submit" name="genre" value="fantasy" style="background: url(imgs/genres/fantasy.jpg);background-size: cover;"><h2><span class="label label-default">Fantasy</span></h2></button>
+	<button type="submit" name="genre" value="horror" style="background: url(imgs/genres/horror.jpg);background-size: cover;"><h2><span class="label label-default">Horror</span></h2></button>
+	<button type="submit" name="genre" value="music" style="background: url(imgs/genres/music.jpg);background-size: cover;"><h2><span class="label label-default">Music</span></h2></button>
+	<button type="submit" name="genre" value="musical" style="background: url(imgs/genres/musical.jpg);background-size: cover;"><h2><span class="label label-default">Musical</span></h2></button>
+	<button type="submit" name="genre" value="mystery" style="background: url(imgs/genres/mystery.jpg);background-size: cover;"><h2><span class="label label-default">Mystery</span></h2></button>
+	<button type="submit" name="genre" value="reality-tv" style="background: url(imgs/genres/reality-tv.jpg);background-size: cover;"><h2><span class="label label-default">Reality-TV</span></h2></button>
+	<button type="submit" name="genre" value="romance" style="background: url(imgs/genres/romance.jpg);background-size: cover;"><h2><span class="label label-default">Romance</span></h2></button>
+	<button type="submit" name="genre" value="sci-fi" style="background: url(imgs/genres/sci-fi.jpg);background-size: cover;"><h2><span class="label label-default">Sci-fi</span></h2></button>
+	<button type="submit" name="genre" value="sport" style="background: url(imgs/genres/sport.jpg);background-size: cover;"><h2><span class="label label-default">Sport</span></h2></button>
+	<button type="submit" name="genre" value="thriller" style="background: url(imgs/genres/thriller.jpg);background-size: cover;"><h2><span class="label label-default">Thriller</span></h2></button>
+	<button type="submit" name="genre" value="war" style="background: url(imgs/genres/war.jpg);background-size: cover;"><h2><span class="label label-default">War</span></h2></button>
+	<button type="submit" name="genre" value="western" style="background: url(imgs/genres/western.jpg);background-size: cover;"><h2><span class="label label-default">Western</span></h2></button>
 </form>
 
 		<!-- jQuery library -->

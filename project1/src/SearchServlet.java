@@ -18,18 +18,22 @@ import com.google.gson.JsonObject;
 public class SearchServlet extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
 
-	 	public String getGenre(HttpServletRequest request) {
-	 		String genre = "";
-	 		ArrayList<String> genreTypes = new ArrayList<String>(Arrays.asList("action", "adventure", "animation", "comedy", "crime", "drama", "fantasy",
-	 															"horror", "mystery", "romance", "sci-fi", "thriller"));
-	 		for(int i=0; i<genreTypes.size(); ++i) {
-	 			if(request.getParameter(genreTypes.get(i)) != null) {
-	 				genre = request.getParameter(genreTypes.get(i));
-	 				return genre;
-	 			}
-	 		}
-	 		
-	 		return genre;
+	 	private String getGenre(HttpServletRequest request) {
+	 		String genre = null;
+	 		ArrayList<String> genreTypes = new ArrayList<String>(Arrays.asList("action", "adult", "adventure", "animation", "comedy", "crime", 
+	 															"documentary", "drama", "family", "fantasy", "horror", "music", "musical", 
+	 															"mystery", "reality-tv", "romance", "sci-fi", "sport", "thriller", "war", "western"));
+ 			String param = request.getParameter("genre");
+ 			if(param != null)
+ 			{
+ 				System.out.println("Genre from Param: " + param);
+ 				System.out.println("GenreTypes: " + genreTypes);
+ 				System.out.println("genreTypes contains statement: " + genreTypes.contains(param));
+ 			}
+	 		if(param != null && genreTypes.contains(param.toLowerCase()))
+	 			return param.toLowerCase();
+	 		else
+	 			return null;
 	 	}
 	 	
 	    /**
@@ -38,18 +42,13 @@ public class SearchServlet extends HttpServlet {
 	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	    	
 	    	String title = request.getParameter("title");
-	        String year = request.getParameter("eyear");
+	    	String ftitle = request.getParameter("ftitle"); // Search by first letter
+	    	String year = request.getParameter("eyear");
 	        String director = request.getParameter("director");
 	        String starname = request.getParameter("starname");
 	        String limit = request.getParameter("limit");
 	        String pageNum = request.getParameter("pagenum");
-	        String genre = getGenre(request);
-
-	        PrintWriter out = response.getWriter();
-	        out.println("<html>");
-	        out.println("<head><title>Movie Search</title></head>");
-	        out.println("<body>");
-    		
+	        String genre = getGenre(request);    		
 	        
 	        String offset = ""; 
 	        if(limit == null)
@@ -64,7 +63,7 @@ public class SearchServlet extends HttpServlet {
 	        
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
-	        String loginUrl = "jdbc:mysql://ec2-18-219-184-119.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 	        
 	        try 
 	        {
@@ -81,6 +80,9 @@ public class SearchServlet extends HttpServlet {
 	    		if(title != null && !title.equals("")) 
     				query += "m.title LIKE '%" + title + "%' AND ";
     			
+	    		if(ftitle != null && !ftitle.equals("")) 
+    				query += "m.title LIKE '" + ftitle + "%' AND ";
+	    		
     			if(year != null && !year.equals("")) 
     				query += "m.year ='" + year + "' AND ";
 
@@ -88,7 +90,7 @@ public class SearchServlet extends HttpServlet {
     				query += "m.director LIKE '%" + director + "%' AND ";	
     			
     			if(genre != null && !genre.equals("")) {
-    				query += "g.name LIKE '%" +genre + "%' AND ";
+    				query += "g.name LIKE '" + genre + "' AND ";
     			}
 
     			if(starname != null && !starname.equals("")) {
@@ -114,7 +116,6 @@ public class SearchServlet extends HttpServlet {
 		
 	    		
 	    		
-	    		
 	    		selectQuery1 += " ORDER BY m.id ASC " + 
 	    				"LIMIT " + limit + " " +
 	    				"OFFSET " + offset + ") AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm " + 
@@ -123,15 +124,8 @@ public class SearchServlet extends HttpServlet {
 	    				"ORDER BY m.director ASC;";
 	    		
 	    		
-	    		out.println("<h1>" + query+ "</h1>");
-	    		out.println("<h1>" + "<br>" +  selectQuery1+ "</h1>");
-	    		out.println("<h1>" + "<br>" + selectQuery2+ "</h1>");
-	    		out.println("<h1>" + "<br>" + genre+ "</h1>");
-
-        		out.println("</body>");
-        		out.println("</html>");
-	    		
-	    		
+	    			    		
+	    		System.out.println("Genre from method: " + genre);
 	    		boolean hasResultSets = statement.execute(selectQuery2 + selectQuery1);
 	    		ResultSet resultSet = statement.getResultSet();
 	    		
