@@ -1,0 +1,9 @@
+@charset "ISO-8859-1";
+
+button[name="genre"] {
+	border-radius: 10px;
+	width:233px;
+	height:128px;
+	border:none;
+	background-size: cover;
+}
