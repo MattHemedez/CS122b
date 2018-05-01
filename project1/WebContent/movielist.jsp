@@ -181,7 +181,12 @@
                   				<div class="d-flex justify-content-between align-items-center">
                    					<div class="btn-group">
                       					<button type="button" class="btn btn-sm btn-outline-secondary"><a href=<%=movieURL %>>View</a></button>  
-
+                      					
+										<form id="addItem" method="GET" action="CartServlet">
+											<input type="hidden" name="movieName" value="<%=movieList.get(i) %>"/>
+	                      					<input type="submit" class="btn btn-sm btn-outline-secondary" value="Add to Cart"></input>  
+										</form> 
+										
                     				</div>
                     				<small class="text-muted pull-right"><%=imdbID %></small>
                     				

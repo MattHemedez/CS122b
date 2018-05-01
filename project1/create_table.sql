@@ -103,3 +103,20 @@ CREATE TABLE IF NOT EXISTS `ratings` (
     REFERENCES `movies` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
+  `movieId` VARCHAR(10) NOT NULL,
+  `customerId` INT(11) NOT NULL,
+  `quantity` INT NULL,
+  INDEX `customerId_idx` (`customerId` ASC),
+  INDEX `movieId_idx` (`movieId` ASC),
+  CONSTRAINT `movieId5`
+    FOREIGN KEY (`movieId`)
+    REFERENCES `moviedb`.`movies` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `customerId2`
+    FOREIGN KEY (`customerId`)
+    REFERENCES `moviedb`.`customers` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION);

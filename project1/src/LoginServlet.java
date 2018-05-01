@@ -29,6 +29,7 @@ public class LoginServlet extends HttpServlet {
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
         
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
