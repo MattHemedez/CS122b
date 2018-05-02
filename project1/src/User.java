@@ -17,6 +17,10 @@ public class User {
     public String getUsername() {
         return this.username;
     }
+    
+    public String getId() {
+    	return this.id;
+    }
 
     public String getId() {
         return this.id;

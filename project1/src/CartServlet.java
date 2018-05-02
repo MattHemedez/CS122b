@@ -2,6 +2,10 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -30,25 +34,64 @@ public class CartServlet extends HttpServlet {
         HttpSession session = request.getSession(true); // Get a instance of current session on the request
         ArrayList<String> previousMovies = (ArrayList<String>) session.getAttribute("previousMovies"); // Retrieve data named "previousItems" from session
         PrintWriter out = response.getWriter();
+        
+        String loginUser = "mytestuser";
+        String loginPasswd = "mypassword";
+        String loginUrl = "jdbc:mysql://ec2-18-220-219-13.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+        
+        
+        
+        String customerId= (String) request.getSession().getAttribute("id");
+        String movieId = request.getParameter("movieId");
+        String movieName = request.getParameter("movieName");
+        
+        String query = "INSERT INTO cart (movieId, customerId, quantity) "
+        		+ "VALUES('"+ movieId + "', '" + customerId + "', '" + " 1)"
+        		+ "ON DUPLICATE KEY UPDATE quantity=quantity+1;";
+        
+        
+        try 
+        {
+    		Class.forName("com.mysql.jdbc.Driver").newInstance();
+    		// create database connection
+    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+    		// declare statement
+    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
+    				   				ResultSet.CONCUR_READ_ONLY);
+    		
+    		ResultSet resultSet = statement.executeQuery(query);
 
-        if (previousMovies == null) {
-        	previousMovies = new ArrayList<>();
-            session.setAttribute("previousMovies", previousMovies); // Add the newly created ArrayList to session, so that it could be retrieved next time
+        }
+        catch(Exception e){
+        	e.printStackTrace();
         }
         
-        String newMovie = request.getParameter("movieName"); // Get parameter that sent by GET request url
         
         
         
         
-        JsonArray jsonArrayGenres = new JsonArray();
-		JsonObject jsonMovies = new JsonObject();
-
-		for(String movie: previousMovies)
-		{
-			jsonMovies.addProperty("movie", movie);
-			jsonArrayGenres.add(jsonMovies);
-		}
+        
+        
+        
+        
+//        if (previousMovies == null) {
+//        	previousMovies = new ArrayList<>();
+//            session.setAttribute("previousMovies", previousMovies); // Add the newly created ArrayList to session, so that it could be retrieved next time
+//        }
+//        
+//        String newMovie = request.getParameter("movieName"); // Get parameter that sent by GET request url
+        
+        
+        
+//        
+//        JsonArray jsonArrayGenres = new JsonArray();
+//		JsonObject jsonMovies = new JsonObject();
+//
+//		for(String movie: previousMovies)
+//		{
+//			jsonMovies.addProperty("movie", movie);
+//			jsonArrayGenres.add(jsonMovies);
+//		}
 
 		// Create a JsonObject based on the data we retrieve from rs
 //		JsonObject jsonObject = new JsonObject();
@@ -62,9 +105,9 @@ public class CartServlet extends HttpServlet {
 //		jsonObject.add("movie_stars", jsonArrayStars);
 		
         // write JSON string to output
-        out.write(jsonMovies.toString());
+//        out.write(jsonMovies.toString());
         // set response status to 200 (OK)
-        response.setStatus(200);
+//        response.setStatus(200);
 
         
         

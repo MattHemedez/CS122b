@@ -182,9 +182,12 @@
                    					<div class="btn-group">
                       					<button type="button" class="btn btn-sm btn-outline-secondary"><a href=<%=movieURL %>>View</a></button>  
                       					
-										<form id="addItem" method="GET" action="CartServlet">
+										<form id="addItem" method="GET"  action="CartServlet"> <!--  WHEN FINISHED ADD THIS TO MAKE SO IT DOESNT DISPLAY NEW PAGE onsubmit="return false" -->
 											<input type="hidden" name="movieName" value="<%=movieList.get(i) %>"/>
-	                      					<input type="submit" class="btn btn-sm btn-outline-secondary" value="Add to Cart"></input>  
+											<input type="hidden" name="movieId" value="<%=imdbID%>"/>
+											
+	                      					<input type="submit" class="btn btn-sm btn-outline-secondary" value="Add to Cart" 
+	                      					onclick="return confirm('Are you sure you would like to add <%=movieList.get(i)%> to cart?');"></input>  
 										</form> 
 										
                     				</div>
