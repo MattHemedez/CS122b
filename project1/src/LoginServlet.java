@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
         */
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        String loginUrl = "jdbc:mysql://ec2-18-220-219-13.us-east-2.compute.amazonaws.com:3306/moviedb";
 
         
         // get the printwriter for writing response
@@ -48,7 +48,8 @@ public class LoginServlet extends HttpServlet {
 	        String password = request.getParameter("password");
 	        
 	        
-    		String query = "SELECT c.firstName, c.lastName, c.id " + 
+
+	        String query = "SELECT c.firstName, c.lastName, c.id " + 
     				"FROM customers AS c " + 
     				"WHERE c.password LIKE '" + password + "' AND (c.email LIKE '"+ username + "' OR c.email LIKE '" + username +"@%');";
     		 
