@@ -19,17 +19,10 @@ public class SearchServlet extends HttpServlet {
 	 private static final long serialVersionUID = 1L;
 
 	 	private String getGenre(HttpServletRequest request) {
-	 		String genre = null;
 	 		ArrayList<String> genreTypes = new ArrayList<String>(Arrays.asList("action", "adult", "adventure", "animation", "comedy", "crime", 
 	 															"documentary", "drama", "family", "fantasy", "horror", "music", "musical", 
 	 															"mystery", "reality-tv", "romance", "sci-fi", "sport", "thriller", "war", "western"));
  			String param = request.getParameter("genre");
- 			if(param != null)
- 			{
- 				System.out.println("Genre from Param: " + param);
- 				System.out.println("GenreTypes: " + genreTypes);
- 				System.out.println("genreTypes contains statement: " + genreTypes.contains(param));
- 			}
 	 		if(param != null && genreTypes.contains(param.toLowerCase()))
 	 			return param.toLowerCase();
 	 		else
@@ -48,8 +41,19 @@ public class SearchServlet extends HttpServlet {
 	        String starname = request.getParameter("starname");
 	        String limit = request.getParameter("limit");
 	        String pageNum = request.getParameter("pagenum");
+	        String orderBy = request.getParameter("orderBy");
+	        String order = request.getParameter("order");
 	        String genre = getGenre(request);    		
 	        
+	        if(orderBy == null || (!orderBy.equals("title") && !orderBy.equals("rating")))
+	        	orderBy = "title";
+	        if(order == null || (!order.equals("DESC") && !order.equals("ASC")))
+        	{
+	        	if(orderBy.equals("title"))
+	        		order = "ASC";
+	        	else
+	        		order = "DESC";
+        	}
 	        String offset = ""; 
 	        if(limit == null)
 	        	limit = "10";
@@ -110,22 +114,21 @@ public class SearchServlet extends HttpServlet {
 	    		}
 
 		
-	    		
 	    		String selectQuery1 = "SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + query;
 	    		String selectQuery2 = "SELECT COUNT(DISTINCT m.id) AS total " + query + ") as m;";
 		
-	    		
-	    		
-	    		selectQuery1 += " ORDER BY m.id ASC " + 
+	    		String innerOrderBy = "m.";
+	    		if(orderBy.equals("rating"))
+	    			innerOrderBy = "r.";
+	    		selectQuery1 += "ORDER BY " + innerOrderBy + orderBy + " " + order + " " + 
 	    				"LIMIT " + limit + " " +
 	    				"OFFSET " + offset + ") AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm " + 
 	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND g.id = gm.genreId AND gm.movieId = m.id " + 
 	    				"GROUP BY m.id " + 
-	    				"ORDER BY m.director ASC;";
+	    				"ORDER BY m." + orderBy + " " + order + ";";
 	    		
 	    		
 	    			    		
-	    		System.out.println("Genre from method: " + genre);
 	    		boolean hasResultSets = statement.execute(selectQuery2 + selectQuery1);
 	    		ResultSet resultSet = statement.getResultSet();
 	    		
@@ -203,6 +206,7 @@ public class SearchServlet extends HttpServlet {
 	                request.setAttribute("genres", genres);
 	                request.setAttribute("pageNum", pageNum);
 	                request.setAttribute("totalPages", totalPages);
+	                request.setAttribute("totalResults", totalResults);
 	                request.setAttribute("status", "Success");
 	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
 	                dispatcher.forward(request, response);

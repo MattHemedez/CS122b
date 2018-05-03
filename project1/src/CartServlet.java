@@ -1,19 +1,21 @@
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.sql.PreparedStatement;
@@ -24,8 +26,14 @@ import java.sql.PreparedStatement;
 @WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
 public class CartServlet extends HttpServlet {
 	private static final long serialVersionUID = 2L;
-    
-	
+	// Create a dataSource which registered in web.xml
+	//@Resource(name = "jdbc/moviedb")
+	//private DataSource dataSource;
+	String loginUser = "mytestuser";
+	String loginPasswd = "mypassword";
+	String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+
+
 	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, int amount, String movieName) throws SQLException {
         String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity+1;";
         PreparedStatement statement = connection.prepareStatement(query);
@@ -45,6 +53,7 @@ public class CartServlet extends HttpServlet {
 		
 		return statement;
 	}
+
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -133,9 +142,8 @@ public class CartServlet extends HttpServlet {
 			out.write(jsonObject.toString());
 
 			// set reponse status to 500 (Internal Server Error)
-			response.setStatus(500);        }
-        
- 
-        
+			response.setStatus(500);        
+			}
+
 	}
 }

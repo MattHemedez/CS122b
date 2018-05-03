@@ -59,7 +59,7 @@ console.log("This is the customerId: " + customerId);
 jQuery.ajax({
     dataType: "json",  // Setting return data type
     method: "GET",// Setting request method
-    url: "api/cart?id=" + customerId, // Setting request url, which is mapped by CartServlet.java
-    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the CartServlet
+
+    url: "api/cart", // Setting request url, which is mapped by MovieServlet in Movie.java
+    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
 });
-console.log("handleResult: First call");
