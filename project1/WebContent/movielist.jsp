@@ -17,7 +17,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<title>FabFlix Movie Listings</title>
 	</head>
-	<body style="body {padding-top: 100px;} background-color:white" >
+	<body>
 		<%
 	    	ArrayList<String> movieList = (ArrayList<String>) request.getAttribute("movies");
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
@@ -30,10 +30,10 @@
 
 
 	    	String query = (String) request.getAttribute("query");
-
+			int totalResults = (int) request.getAttribute("totalResults");
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
 	    	int totalPages = (int)request.getAttribute("totalPages");
-	    	String url = ((String) request.getAttribute("url")).replaceAll("&pagenum=[^&]*", "") + "&pagenum=";
+	    	String url = ((String) request.getAttribute("url")).replaceAll("(&||\\?)pagenum=[^&]*", "") + "&pagenum=";
 	    	String baseUrl = (String) request.getAttribute("baseUrl");
 	    	String firstLink = "";
 	    	if(pageNum == 1)
@@ -85,55 +85,107 @@
 				</div>
 		  	</div>
 		</nav>
-		
-		<nav aria-label="Upper Page navigation">
-			<ul class="pagination">
-				<li>
-					<a href="<%=firstLink%>" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-				<%
-					int pageIndex = pageNum + -2;
-					String link = "";
-					String liClass = "";
-					for(int i = -2; i < 3; ++i)
-					{
-						liClass = "";
-						if(pageIndex <= 0)
-							pageIndex = 1;
-						if(pageIndex == pageNum)
-						{
-							liClass = " class='active'";
-							link = "#";
-						}
-						else if(pageIndex <= totalPages)
-							link = url + pageIndex;
-						else
-							liClass = " class='disabled'";
-						
-				%>
-				
-				
-				<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
-				<%pageIndex += 1;}%>
-				<li>
-					<a href="<%=lastLink%>" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-					</a>	
-				</li>
-			</ul>
-		</nav>
-		
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-1 col-md-offset-1">
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Order By
+						<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<%
+							String orderByUrl = url.replaceAll("(&||\\?)orderBy=[^&]*", "");
+							%>
+							<li><a href="<%=orderByUrl+"1&orderBy=title"%>">Title</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="<%=orderByUrl+"1&orderBy=rating"%>">Rating</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Order
+						<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+							<%
+							String orderUrl = url.replaceAll("(&||\\?)order=[^&]*", "");
+							%>
+							<li><a href="<%=orderUrl+"1&order=ASC"%>">Ascending</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="<%=orderUrl+"1&order=DESC"%>">Descending</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<div class="dropdown">
+						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Movies Per Page
+						<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu3">
+							<%
+							String limitUrl = url.replaceAll("(&||\\?)limit=[^&]*", "");
+							%>
+							<li><a href="<%=limitUrl+"1&limit=10"%>">10</a></li>
+							<li><a href="<%=limitUrl+"1&limit=25"%>">25</a></li>
+							<li><a href="<%=limitUrl+"1&limit=50"%>">50</a></li>
+							<li><a href="<%=limitUrl+"1&limit=100"%>">100</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-3 text-center">
+					<nav aria-label="Upper Page navigation">
+						<ul class="pagination">
+							<li>
+								<a href="<%=firstLink%>" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<%
+								int pageIndex = pageNum + -2;
+								String link = "";
+								String liClass = "";
+								for(int i = -2; i < 3; ++i)
+								{
+									liClass = "";
+									if(pageIndex <= 0)
+										pageIndex = 1;
+									if(pageIndex == pageNum)
+									{
+										liClass = " class='active'";
+										link = "#";
+									}
+									else if(pageIndex <= totalPages)
+										link = url + pageIndex;
+									else
+										liClass = " class='disabled'";
+							%>
+							<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
+							<%pageIndex += 1;}%>
+							<li>
+								<a href="<%=lastLink%>" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>	
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3 col-md-offset-4 text-center"><span class="label label-info">Results Found: <%=totalResults %></span></div>
+			</div>
+		</div>
 		
         <div class="album py-5 bg-light">
         	<div class="container">
      	    	<div class='row row-equal-height'>
      	    	
-     	    	
-     	    	
-     	    	
-        			
+			
 			<%
 		    for(int i= 0; i<movieList.size(); ++i){
 		    %>	
@@ -222,44 +274,49 @@
 	       </div>	
 	    </div>
 	    
-	    <nav aria-label="Upper Page navigation">
-			<ul class="pagination">
-				<li>
-					<a href="<%=firstLink%>" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-				<%
-					pageIndex = pageNum + -2;
-					link = "";
-					liClass = "";
-					for(int i = -2; i < 3; ++i)
-					{
-						liClass = "";
-						if(pageIndex <= 0)
-							pageIndex = 1;
-						if(pageIndex == pageNum)
-						{
-							liClass = " class='active'";
-							link = "#";
-						}
-						else if(pageIndex <= totalPages)
-							link = url + pageIndex;
-						else
-							liClass = " class='disabled'";
-				%>
-				
-				
-				<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
-				<%pageIndex += 1;}%>
-				<li>
-					<a href="<%=lastLink%>" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-					</a>	
-				</li>
-			</ul>
-		</nav>
-		
+	    <div class="container-fluid">
+		    <div class="row">
+		    	<div class="col-md-3 col-md-offset-5">
+				    <nav aria-label="Lower Page navigation">
+						<ul class="pagination">
+							<li>
+								<a href="<%=firstLink%>" aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+							<%
+								pageIndex = pageNum + -2;
+								link = "";
+								liClass = "";
+								for(int i = -2; i < 3; ++i)
+								{
+									liClass = "";
+									if(pageIndex <= 0)
+										pageIndex = 1;
+									if(pageIndex == pageNum)
+									{
+										liClass = " class='active'";
+										link = "#";
+									}
+									else if(pageIndex <= totalPages)
+										link = url + pageIndex;
+									else
+										liClass = " class='disabled'";
+							%>
+							
+							
+							<li<%=liClass%>><a href="<%=link%>"><%=pageIndex%></a></li>
+							<%pageIndex += 1;}%>
+							<li>
+								<a href="<%=lastLink%>" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>	
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>	
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="logout.js"></script>
