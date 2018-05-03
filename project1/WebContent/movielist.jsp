@@ -70,7 +70,7 @@
 										<li><a href="genrebrowse.html">Browse by Genre</a></li>
 									</ul>
 								<li><a href="search.html">Search</a></li>
-								<li><a href="search.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+								<li><a href="shoppingcart.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
 								<li>
 									<form id="logout_form" method="post" action="#" >
 										<button type="submit" type="submit" class="btn btn-primary navbar-btn">
@@ -182,7 +182,8 @@
                    					<div class="btn-group">
                       					<button type="button" class="btn btn-sm btn-outline-secondary"><a href=<%=movieURL %>>View</a></button>  
                       					
-										<form id="addItem" method="GET"  action="CartServlet"> <!--  WHEN FINISHED ADD THIS TO MAKE SO IT DOESNT DISPLAY NEW PAGE onsubmit="return false" -->
+										<form id="addItem" method="GET"  action="api/cart"> <!--  WHEN FINISHED ADD THIS TO MAKE SO IT DOESNT DISPLAY NEW PAGE onsubmit="return false" -->
+											
 											<input type="hidden" name="movieName" value="<%=movieList.get(i) %>"/>
 											<input type="hidden" name="movieId" value="<%=imdbID%>"/>
 											

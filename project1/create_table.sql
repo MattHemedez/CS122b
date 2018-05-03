@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
   `movieId` VARCHAR(10) NOT NULL,
   `customerId` INT(11) NOT NULL,
   `quantity` INT NULL,
-  PRIMARY KEY (`movieID`, 'customerId')
+  PRIMARY KEY (`movieID`, `customerId`),
   INDEX `customerId_idx` (`customerId` ASC),
   INDEX `movieId_idx` (`movieId` ASC),
   CONSTRAINT `movieId5`
@@ -121,3 +121,6 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
     REFERENCES `moviedb`.`customers` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
+    
+ALTER TABLE `moviedb`.`cart` 
+ADD COLUMN `movieTitle` VARCHAR(100) NULL AFTER `quantity`

@@ -32,14 +32,17 @@ function handleResult(resultData) {
 
     // populate the movie info h3
     // find the empty h3 body by id "movie_info"
-    let movieInfoElement = jQuery("#cart_info");
+
+    let cartInfoElement = jQuery("#cart_info");
+    cartInfoElement.append("<p> DOES THIS EVEN WORK? </p>");
     //movieInfoElement.append("<p>Error Message: " + resultData["errorMessage"] + "</p>");
     // append two html <p> created to the h3 body, which will refresh the page
-    movieInfoElement.append("<p>Movie Title: TESTING ITEM</p>");
+    
+//    for(let i=0; i<resultData.size(); ++i){
+//    	cartInfoElement.append("<p> Movie Title: " + resultData[i]["title"] + "</p>");
+//    }
 
-    movieInfoElement.append("<p>Movie Title: " + resultData["movie"] + "</p>");
 
-    console.log("handleResult: populating star table from resultData");
   
 }
 
@@ -48,12 +51,15 @@ function handleResult(resultData) {
  */
 
 // Get id from URL
-let movieId = getParameterByName('id');
 
+let customerId = getParameterByName('id');
 // Makes the HTTP GET request and registers on success callback function handleResult
+console.log("This is the customerId: " + customerId);
+
 jQuery.ajax({
     dataType: "json",  // Setting return data type
     method: "GET",// Setting request method
-    url: "api/cart?id=" + movieId, // Setting request url, which is mapped by MovieServlet in Movie.java
-    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
+    url: "api/cart?id=" + customerId, // Setting request url, which is mapped by CartServlet.java
+    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the CartServlet
 });
+console.log("handleResult: First call");

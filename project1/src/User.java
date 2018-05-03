@@ -22,7 +22,4 @@ public class User {
     	return this.id;
     }
 
-    public String getId() {
-        return this.id;
-    }
 }
