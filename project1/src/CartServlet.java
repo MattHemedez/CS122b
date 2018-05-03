@@ -1,116 +1,110 @@
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
-/**
- * Servlet implementation class CartServlet
- */
-@WebServlet(name = "CartServlet", urlPatterns = "/CartServlet")
+//Declaring a WebServlet called SingleStarServlet, which maps to url "/api/single-star"
+@WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
 public class CartServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-    
+	private static final long serialVersionUID = 2L;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-        HttpSession session = request.getSession(true); // Get a instance of current session on the request
-        ArrayList<String> previousMovies = (ArrayList<String>) session.getAttribute("previousMovies"); // Retrieve data named "previousItems" from session
-        PrintWriter out = response.getWriter();
-        
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-18-220-219-13.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
-        
-        
-        
-        String customerId= (String) request.getSession().getAttribute("id");
-        String movieId = request.getParameter("movieId");
-        String movieName = request.getParameter("movieName");
-        
-        String query = "INSERT INTO cart (movieId, customerId, quantity) "
-        		+ "VALUES('"+ movieId + "', '" + customerId + "', '" + " 1)"
-        		+ "ON DUPLICATE KEY UPDATE quantity=quantity+1;";
-        
-        
-        try 
-        {
-    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		// create database connection
-    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-    		// declare statement
-    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
-    				   				ResultSet.CONCUR_READ_ONLY);
-    		
-    		ResultSet resultSet = statement.executeQuery(query);
+	// Create a dataSource which registered in web.xml
+	//@Resource(name = "jdbc/moviedb")
+	//private DataSource dataSource;
+	String loginUser = "mytestuser";
+	String loginPasswd = "mypassword";
+	String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
-        }
-        catch(Exception e){
-        	e.printStackTrace();
-        }
+	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, int amount, String movieName) throws SQLException {
+        String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity+1;";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, movieId);
+        statement.setString(2, customerId);
+        statement.setInt(3, 1);
+        statement.setString(4, movieName);
         
-        
-        
-        
-        
-        
-        
-        
-        
-//        if (previousMovies == null) {
-//        	previousMovies = new ArrayList<>();
-//            session.setAttribute("previousMovies", previousMovies); // Add the newly created ArrayList to session, so that it could be retrieved next time
-//        }
-//        
-//        String newMovie = request.getParameter("movieName"); // Get parameter that sent by GET request url
-        
-        
-        
-//        
-//        JsonArray jsonArrayGenres = new JsonArray();
-//		JsonObject jsonMovies = new JsonObject();
-//
-//		for(String movie: previousMovies)
-//		{
-//			jsonMovies.addProperty("movie", movie);
-//			jsonArrayGenres.add(jsonMovies);
-//		}
-
-		// Create a JsonObject based on the data we retrieve from rs
-//		JsonObject jsonObject = new JsonObject();
-//		jsonObject.addProperty("movie_id", movieId);
-//		jsonObject.addProperty("movie_title", movieTitle);
-//		jsonObject.addProperty("movie_year", movieYear);
-//		jsonObject.addProperty("movie_director", movieDirector);
-//		jsonObject.addProperty("movie_rating", movieRating);
-//		jsonObject.addProperty("movie_num_votes", movieNumVotes);
-//		jsonObject.add("movie_genres", jsonArrayGenres);
-//		jsonObject.add("movie_stars", jsonArrayStars);
+        return statement;
+	}
+	
+	public PreparedStatement returnMovies(Connection connection, String customerId) throws SQLException {
+		String query = "SELECT c.movieTitle, c.quantity FROM cart AS c "
+				+ "WHERE c.customerId= ?;";
+		PreparedStatement statement = connection.prepareStatement(query);
+		statement.setString(1, customerId);
 		
-        // write JSON string to output
-//        out.write(jsonMovies.toString());
-        // set response status to 200 (OK)
-//        response.setStatus(200);
+		return statement;
+	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        
-        
-        
+		response.setContentType("application/json"); // Response mime type
+
+		// Retrieve parameter id from url request.
+		//String id = request.getParameter("id");
+		String customerId=((User) request.getSession().getAttribute("user")).getId();
+
+		// Output stream to STDOUT
+		PrintWriter out = response.getWriter();
+
+		try {
+			// Get a connection from dataSource
+			//Connection dbcon = dataSource.getConnection();
+			// create database connection
+			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+			
+			// Declare our statement
+			PreparedStatement statement = returnMovies(connection, customerId);
+			
+			// Perform the query
+			ResultSet rs = statement.executeQuery();
+			
+			
+			JsonArray jsonShoppingCart = new JsonArray(); 
+			// Iterate through each row of rs
+			while(rs.next()) {
+				String title = rs.getString("movieTitle");
+				String amount = (String) rs.getString("quantity");
+				
+	            System.out.println(title + " : " + amount);
+
+				JsonObject jsonMovieData = new JsonObject();
+				jsonMovieData.addProperty("title", title);
+				jsonMovieData.addProperty("quantity", amount);
+				
+				jsonShoppingCart.add(jsonMovieData);
+			}
+				
+			// write JSON string to output
+			out.write(jsonShoppingCart.toString());
+			// set response status to 200 (OK)
+			response.setStatus(200);
+			
+			rs.close();
+			statement.close();
+			connection.close();
+		} catch (Exception e) {
+			// write error message JSON object to output
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("errorMessage", e.getMessage());
+			out.write(jsonObject.toString());
+
+			// set reponse status to 500 (Internal Server Error)
+			response.setStatus(500);
+		}
+		out.close();
 	}
 }
