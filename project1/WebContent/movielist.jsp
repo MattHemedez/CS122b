@@ -55,7 +55,7 @@
 								<span class="sr-only">Toggle navigation</span>
 								<span class="icon-bar"></span>
 							</button>
-							<a class="navbar-brand navbar-left" href="index.html">Fabflix  <span class="glyphicon glyphicon-film"></span></a>
+							<a class="navbar-brand navbar-left" href="index.html">Fabflix <span class="glyphicon glyphicon-film"></span></a>
 						</div>
 					</div>
 					<div class="col-md-8">
@@ -66,11 +66,11 @@
 									<ul class="dropdown-menu">
 										<li class="dropdown-header">Browsing Options</li>
 										<li role="separator" class="divider"></li>
-										<li><a href="search.html">Browse by Movie Title</a></li>
+										<li><a href="movietitlebrowse.html">Browse by Movie Title</a></li>
 										<li><a href="genrebrowse.html">Browse by Genre</a></li>
 									</ul>
 								<li><a href="search.html">Search</a></li>
-								<li><a href="search.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
+								<li><a href="shoppingcart.html">Shopping Cart <span class="glyphicon glyphicon-shopping-cart"></span></a></li>
 								<li>
 									<form id="logout_form" method="post" action="#" >
 										<button type="submit" type="submit" class="btn btn-primary navbar-btn">
@@ -227,7 +227,7 @@
 	    	<div class="col-md-3">
 	    				
              	<div class="card mb-4 box-shadow">
-                	<img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"not-found.png")%> >   <!-- DISPLAYS THE MOVIE IMAGE HERE -->
+                	<img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >   <!-- DISPLAYS THE MOVIE IMAGE HERE -->
                 		<div class="card-body">
                   			<p class="card-text"><%="<br />" + (!plot.equals("N/A") ? plot:loremIpsum) %></p>  <!-- DISPLAYS THE MOVIE PLOT HERE -->
                   				<div class="d-flex justify-content-between align-items-center">
