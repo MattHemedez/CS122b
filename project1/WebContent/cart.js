@@ -36,7 +36,7 @@ function handleResult(resultData) {
     let cartInfoElement = jQuery("#cart_table");
 //    <img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >
     for(var i=0; i<resultData.length; ++i){
-    	cartInfoElement.append("<tr><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ "></td>" +
+    	cartInfoElement.append("<tr class='cartItem'><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ "></td>" +
     			"<td>"+resultData[i]["title"]+"</td>" +
     			"<td>Qty<input id='amount' style='width:5%;text-align:center;' value=" +resultData[i]["quantity"]+">"+
     			
@@ -55,17 +55,12 @@ function handleResult(resultData) {
 			
     			"</td>" +
     			"<td><p>Price: $17.99</p><p>2-day shipping</p><p>Pickup</p></td></tr>");
-//    	cartInfoElement.append("<p>" + resultData[i]["title"]+  ":" + resultData[i]["quantity"] + "</p>");
     }
-    //movieInfoElement.append("<p>Error Message: " + resultData["errorMessage"] + "</p>");
-    // append two html <p> created to the h3 body, which will refresh the page
-    
-//    for(let i=0; i<resultData.size(); ++i){
-//    	cartInfoElement.append("<p> Movie Title: " + resultData[i]["title"] + "</p>");
-//    }
+    let checkout = jQuery("#checkout");
 
-
-  
+    checkout.append("<form action='customerinfo.html'>" +
+    		"<input type='submit' class='btn btn-primary btn-lg' value='Checkout' />" +
+    		"</form>");
 }
 
 /**
@@ -80,29 +75,3 @@ jQuery.ajax({
     success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
 });
 
-
-//function submitQuantity(formSubmitEvent) {
-//    console.log("submit change quanity form");
-////    window.location.reload(true);
-//
-//    // Important: disable the default action of submitting the form
-//    //   which will cause the page to refresh
-//    //   see jQuery reference for details: https://api.jquery.com/submit/
-//    formSubmitEvent.preventDefault(formSubmitEvent);
-//    var movieName= document.getElementById('movieName').value;
-//    var movieId= document.getElementById('movieId').value;
-//    var moviePoster= document.getElementById('moviePoster').value;
-////    var form = $('changeQuantity');
-////    console.log("Movie: " + movieName + " MovieId: " + movieId + "moviePoster: " + moviePoster);
-//    jQuery.ajax({
-//    	data: {"movieName":movieName, "movieId":movieId, "moviePoster":moviePoster},
-//        dataType: "json",  // Setting return data type
-//        method: "GET",// Setting request method
-//        url: "api/cart", // Setting request url, which is mapped by MovieServlet in Movie.java
-//        success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
-//    });
-//
-//}
-//
-////// Bind the submit action of the form to a handler function
-//jQuery("#changeQuantity").submit((event) => submitQuantity(event));
