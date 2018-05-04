@@ -36,19 +36,34 @@ function handleResult(resultData) {
     let cartInfoElement = jQuery("#cart_table");
 //    <img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >
     for(var i=0; i<resultData.length; ++i){
-    	cartInfoElement.append("<tr class='cartItem'><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ "></td>" +
+    	cartInfoElement.append("<tr class='cartItem'><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ ">" +
+    			"<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
+					"<input type='submit' class='btn btn-sm btn-outline-secondary' name='deleteButton' style='width:40%;text-align:center;align:center;' value='delete' />"+
+					"<input type='hidden' name='movieName' value="+resultData[i]["title"]+"/>"+
+					"<input type='hidden' name='movieId' value="+resultData[i]["movieId"]+"/>"+
+					"<input type='hidden' name='moviePoster' value="+resultData[i]["moviePoster"]+"/>"+
+					"<input type='hidden' name='validInput' value='delete' />"+
+				"</form></td>"+
+    			
     			"<td>"+resultData[i]["title"]+"</td>" +
-    			"<td>Qty<input id='amount' style='width:5%;text-align:center;' value=" +resultData[i]["quantity"]+">"+
+    			"<td>"+
+    			"<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
+					"<input title='Quantity has to be >=0' id='amount' name='inputChange' style='width:7%;text-align:center;align:center;' " +
+					"pattern='[0-9][0-9]{0,4}' value=" +resultData[i]["quantity"]+"><br/>"+
+					
+					"<input type='hidden' name='movieName' value="+resultData[i]["title"]+"/>"+
+					"<input type='hidden' name='movieId' value="+resultData[i]["movieId"]+"/>"+
+					"<input type='hidden' name='moviePoster' value="+resultData[i]["moviePoster"]+"/>"+
+					"<input type='hidden' name='validInput' value='delete' />"+
+    			"</form>"+
     			
     			"<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
 					"<input type='hidden' name='movieName' value="+resultData[i]["title"]+"/>"+
 					"<input type='hidden' name='movieId' value="+resultData[i]["movieId"]+"/>"+
 					"<input type='hidden' name='moviePoster' value="+resultData[i]["moviePoster"]+"/>"+
-
 					"<input type='submit' name='decrement' class='btn btn-sm btn-outline-secondary' value='-' /input>"+ 
-					"<input type='submit' name='increment' class='btn btn-sm btn-outline-secondary' value='+' /input>"+
-                
-                
+					"<input type='submit' name='increment' class='btn btn-sm btn-outline-secondary' value='+' /input>"+     
+      
                 "</form>"+
 	                
 	                

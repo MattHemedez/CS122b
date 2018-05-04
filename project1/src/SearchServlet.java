@@ -68,7 +68,7 @@ public class SearchServlet extends HttpServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://ec2-13-59-47-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
 
 	        
 	        try 
@@ -100,9 +100,8 @@ public class SearchServlet extends HttpServlet {
     			}
 
     			if(starname != null && !starname.equals("")) {
-    				String delim = "[ ]+";
-    				String[] parsed = starname.split(delim);
-    				query += "s.name LIKE '"+ parsed[0] + "%' " + "OR " + "s.name LIKE '%" + parsed[1];
+    				
+    				query += "s.name LIKE '%" +starname + "%'";
     			}
     			
     			
@@ -118,8 +117,8 @@ public class SearchServlet extends HttpServlet {
 		
 	    		String selectQuery1 = "SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + query;
 	    		String selectQuery2 = "SELECT COUNT(DISTINCT m.id) AS total " + query + ") as m;";
-		
 	    		String innerOrderBy = "m.";
+	    		
 	    		if(orderBy.equals("rating"))
 	    			innerOrderBy = "r.";
 	    		selectQuery1 += "ORDER BY " + innerOrderBy + orderBy + " " + order + " " + 

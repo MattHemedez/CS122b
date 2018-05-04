@@ -32,7 +32,7 @@ public class CartServlet extends HttpServlet {
 	//private DataSource dataSource;
 	String loginUser = "mytestuser";
 	String loginPasswd = "mypassword";
-	String loginUrl = "jdbc:mysql://ec2-18-188-219-180.us-east-2.compute.amazonaws.com:3306/moviedb";
+	String loginUrl = "jdbc:mysql://ec2-13-59-47-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
 
 
 	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, String movieName, String moviePoster, int changeQuant) throws SQLException {
@@ -47,7 +47,22 @@ public class CartServlet extends HttpServlet {
         statement.setString(4, movieName);
         statement.setString(5, moviePoster);
         statement.setInt(6, changeQuant);
+        return statement;
+	}
+	
+	public PreparedStatement deleteUpdate(Connection connection, String movieId, String customerId, String movieName, String moviePoster, int changeQuant) throws SQLException {
+        String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle, moviePoster) "
+        		+ "VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?;"
+        		+ "DELETE FROM cart WHERE quantity<=0;";
         
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, movieId.replace("/", ""));
+        statement.setString(2, customerId);
+        statement.setInt(3, 1);
+        statement.setString(4, movieName);
+        statement.setString(5, moviePoster);
+        statement.setInt(6, changeQuant);
+      
         return statement;
 	}
 	
@@ -71,12 +86,7 @@ public class CartServlet extends HttpServlet {
 		response.setContentType("application/json"); // Response mime type
 
 		PrintWriter out = response.getWriter();
-        
-        
-        
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-18-191-10-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+
         
         
         
@@ -107,10 +117,23 @@ public class CartServlet extends HttpServlet {
     			// used to update quantity of the movie 
     		
     	        int changeQuantity = (request.getParameter("increment") != null ?1: -1);
-    	        System.out.println("THIS IS THE CHANGE QUANTITY: " + changeQuantity);
-    			PreparedStatement toExecute= updateMovies(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
-    			toExecute.executeUpdate();
-    			toExecute.close();
+    	        
+    	        if(request.getParameter("validInput")!= null) {
+    	        	
+    	        	
+    	        	changeQuantity =(request.getParameter("deleteButton")!=null ? 0:
+    	        			Integer.parseInt(request.getParameter("inputChange")));
+    	        	PreparedStatement toExecute= deleteUpdate(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
+    	        	toExecute.executeUpdate();
+        			toExecute.close();
+    	        }else {
+    	        	System.out.println("COMES IN HERE CARTSERVLET INC/DEC");
+    	        	PreparedStatement toExecute= updateMovies(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
+    	        	toExecute.executeUpdate();
+        			toExecute.close();
+    	        }
+    			
+    			connection.close();
                 response.sendRedirect("/cs122b-spring18-team-55/shoppingcart.html");
 
     		}else {
