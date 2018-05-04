@@ -33,12 +33,21 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
     //movieInfoElement.append("<p>Error Message: " + resultData["errorMessage"] + "</p>");
     // append two html <p> created to the h3 body, which will refresh the page
-    movieInfoElement.append("<p>Movie Title: " + resultData["movie_title"] + "</p>" +
+    
+    var movieTitle =resultData["movie_title"];
+    movieInfoElement.append("<p>Movie Title: " + movieTitle + "</p>" +
         "<p>Movie Year: " + resultData["movie_year"] + "</p>" + 
         "<p>Movie Director: " + resultData["movie_director"] + "</p>" + 
         "<p>Movie rating: " + resultData["movie_rating"] + "</p>" +
-        "<p>Number of User Votes: " + resultData["movie_num_votes"] + "</p>");
-
+        "<p>Number of User Votes: " + resultData["movie_num_votes"] + "</p>" + 
+        
+        "<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
+			"<input type='hidden' name='movieName' value=\""+movieTitle+"\"/>"+
+			"<input type='hidden' name='movieId' value="+resultData["movie_id"]+"/>"+
+			"<input type='hidden' name='increment' value='1'/>"+
+			"<input type='submit' class='btn btn-sm btn-outline-secondary' value='Add to Cart'/>" +
+    	"</form>");
+    	
     console.log("handleResult: populating star table from resultData");
     // Populate the genre table
     // Find the empty table body by id "genre_table_body"
@@ -65,7 +74,7 @@ function handleResult(resultData) {
     for (let i = 0; i < resultData["movie_genres"].length; i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData["movie_genres"][i]["genre_name"] + "</th>";
+        rowHTML += "<th><a href=\"SearchServlet?genre=" + resultData["movie_genres"][i]["genre_name"] + "\">" + resultData["movie_genres"][i]["genre_name"] + "</a></th>";
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
