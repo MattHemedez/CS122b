@@ -238,6 +238,8 @@
 											
 											<input type="hidden" name="movieName" value="<%=movieList.get(i) %>"/>
 											<input type="hidden" name="movieId" value="<%=imdbID%>"/>
+											<input type="hidden" name="moviePoster" value="<%=movieUrl%>"/>
+											<input type="hidden" name="increment" value="1"/>
 											
 	                      					<input type="submit" class="btn btn-sm btn-outline-secondary" value="Add to Cart" 
 	                      					onclick="return confirm('Are you sure you would like to add <%=movieList.get(i)%> to cart?');"></input>  

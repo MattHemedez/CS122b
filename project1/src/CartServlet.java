@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,22 +32,27 @@ public class CartServlet extends HttpServlet {
 	//private DataSource dataSource;
 	String loginUser = "mytestuser";
 	String loginPasswd = "mypassword";
-	String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+	String loginUrl = "jdbc:mysql://ec2-18-188-219-180.us-east-2.compute.amazonaws.com:3306/moviedb";
 
 
-	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, int amount, String movieName) throws SQLException {
-        String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity+1;";
+	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, String movieName, String moviePoster, int changeQuant) throws SQLException {
+        String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle, moviePoster) "
+        		+ "VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=quantity+?;"
+        		+ "DELETE FROM cart WHERE quantity<=0;";
+        
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, movieId);
+        statement.setString(1, movieId.replace("/", ""));
         statement.setString(2, customerId);
         statement.setInt(3, 1);
         statement.setString(4, movieName);
+        statement.setString(5, moviePoster);
+        statement.setInt(6, changeQuant);
         
         return statement;
 	}
 	
 	public PreparedStatement returnMovies(Connection connection, String customerId) throws SQLException {
-		String query = "SELECT c.movieTitle, c.quantity FROM cart AS c "
+		String query = "SELECT c.movieTitle, c.quantity,c.moviePoster,c.movieId FROM cart AS c "
 				+ "WHERE c.customerId= ?;";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setString(1, customerId);
@@ -66,23 +72,22 @@ public class CartServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
         
-		String id = request.getParameter("id");
-
-
         
         
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-18-188-219-180.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+        String loginUrl = "jdbc:mysql://ec2-18-191-10-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
         
         
         
         String customerId=((User) request.getSession().getAttribute("user")).getId();
         String movieId = request.getParameter("movieId");
         String movieName = request.getParameter("movieName");
-        
+        String moviePoster = request.getParameter("moviePoster");
       
-        
+        System.out.println("This is the MOVIEID: " + movieId);
+        System.out.println("This is the movieTitle: " + movieName);
+
 //        String query = "INSERT INTO cart (movieId, customerId, quantity) "
 //        		+ "VALUES('"+ movieId + "', '" + customerId + "', " + " 1)"
 //        		+ "ON DUPLICATE KEY UPDATE quantity=quantity+1;";
@@ -100,28 +105,35 @@ public class CartServlet extends HttpServlet {
 
     		if(movieId != null || movieName != null) {
     			// used to update quantity of the movie 
-    			int incrementBy = 1;
-    			PreparedStatement toExecute= updateMovies(connection,movieId, customerId, incrementBy,movieName);
+    		
+    	        int changeQuantity = (request.getParameter("increment") != null ?1: -1);
+    	        System.out.println("THIS IS THE CHANGE QUANTITY: " + changeQuantity);
+    			PreparedStatement toExecute= updateMovies(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
     			toExecute.executeUpdate();
     			toExecute.close();
+                response.sendRedirect("/cs122b-spring18-team-55/shoppingcart.html");
+
     		}else {
     			// need to fetch the customers data
-    			PreparedStatement statement = returnMovies(connection, id);
+    			PreparedStatement statement = returnMovies(connection, customerId);
     			ResultSet rs = statement.executeQuery();
 
     			while(rs.next()) {
     				String title = rs.getString("movieTitle");
     				String amount = (String) rs.getString("quantity");
-    				
-    	            System.out.println(title + " : " + amount);
+    				String movieUrl = rs.getString("moviePoster");
+    				String mId = rs.getString("movieId");
+//    	            System.out.println(title + " : " + amount);
 
 					JsonObject jsonMovieData = new JsonObject();
 					jsonMovieData.addProperty("title", title);
     				jsonMovieData.addProperty("quantity", amount);
-    				
+    				jsonMovieData.addProperty("moviePoster", movieUrl);
+    				jsonMovieData.addProperty("movieId", movieUrl);
+    				jsonMovieData.addProperty("movieId", mId);
     				jsonShoppingCart.add(jsonMovieData);
     			}
-    			System.out.println(jsonShoppingCart);
+//    			System.out.println(jsonShoppingCart);
     			out.write(jsonShoppingCart.toString());
                 response.setStatus(200);
                 rs.close();

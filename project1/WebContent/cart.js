@@ -33,8 +33,30 @@ function handleResult(resultData) {
     // populate the movie info h3
     // find the empty h3 body by id "movie_info"
 
-    let cartInfoElement = jQuery("#cart_info");
-    cartInfoElement.append("<p> DOES THIS EVEN WORK? </p>");
+    let cartInfoElement = jQuery("#cart_table");
+//    <img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >
+    for(var i=0; i<resultData.length; ++i){
+    	cartInfoElement.append("<tr><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ "></td>" +
+    			"<td>"+resultData[i]["title"]+"</td>" +
+    			"<td>Qty<input id='amount' style='width:5%;text-align:center;' value=" +resultData[i]["quantity"]+">"+
+    			
+    			"<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
+					"<input type='hidden' name='movieName' value="+resultData[i]["title"]+"/>"+
+					"<input type='hidden' name='movieId' value="+resultData[i]["movieId"]+"/>"+
+					"<input type='hidden' name='moviePoster' value="+resultData[i]["moviePoster"]+"/>"+
+
+					"<input type='submit' name='decrement' class='btn btn-sm btn-outline-secondary' value='-' /input>"+ 
+					"<input type='submit' name='increment' class='btn btn-sm btn-outline-secondary' value='+' /input>"+
+                
+                
+                "</form>"+
+	                
+	                
+			
+    			"</td>" +
+    			"<td><p>Price: $17.99</p><p>2-day shipping</p><p>Pickup</p></td></tr>");
+//    	cartInfoElement.append("<p>" + resultData[i]["title"]+  ":" + resultData[i]["quantity"] + "</p>");
+    }
     //movieInfoElement.append("<p>Error Message: " + resultData["errorMessage"] + "</p>");
     // append two html <p> created to the h3 body, which will refresh the page
     
@@ -50,16 +72,37 @@ function handleResult(resultData) {
  * Once this .js is loaded, following scripts will be executed by the browser\
  */
 
-// Get id from URL
-
-let customerId = getParameterByName('id');
-// Makes the HTTP GET request and registers on success callback function handleResult
-console.log("This is the customerId: " + customerId);
 
 jQuery.ajax({
     dataType: "json",  // Setting return data type
     method: "GET",// Setting request method
-
     url: "api/cart", // Setting request url, which is mapped by MovieServlet in Movie.java
     success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
 });
+
+
+//function submitQuantity(formSubmitEvent) {
+//    console.log("submit change quanity form");
+////    window.location.reload(true);
+//
+//    // Important: disable the default action of submitting the form
+//    //   which will cause the page to refresh
+//    //   see jQuery reference for details: https://api.jquery.com/submit/
+//    formSubmitEvent.preventDefault(formSubmitEvent);
+//    var movieName= document.getElementById('movieName').value;
+//    var movieId= document.getElementById('movieId').value;
+//    var moviePoster= document.getElementById('moviePoster').value;
+////    var form = $('changeQuantity');
+////    console.log("Movie: " + movieName + " MovieId: " + movieId + "moviePoster: " + moviePoster);
+//    jQuery.ajax({
+//    	data: {"movieName":movieName, "movieId":movieId, "moviePoster":moviePoster},
+//        dataType: "json",  // Setting return data type
+//        method: "GET",// Setting request method
+//        url: "api/cart", // Setting request url, which is mapped by MovieServlet in Movie.java
+//        success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
+//    });
+//
+//}
+//
+////// Bind the submit action of the form to a handler function
+//jQuery("#changeQuantity").submit((event) => submitQuantity(event));
