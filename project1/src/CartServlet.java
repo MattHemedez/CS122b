@@ -32,7 +32,7 @@ public class CartServlet extends HttpServlet {
 	//private DataSource dataSource;
 	String loginUser = "mytestuser";
 	String loginPasswd = "mypassword";
-	String loginUrl = "jdbc:mysql://ec2-13-59-47-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+	String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 
 
 	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, String movieName, String moviePoster, int changeQuant) throws SQLException {
@@ -134,7 +134,7 @@ public class CartServlet extends HttpServlet {
     	        }
     			
     			connection.close();
-                response.sendRedirect("/cs122b-spring18-team-55/shoppingcart.html");
+                response.sendRedirect("/project1/shoppingcart.html"); // CHANGE THIS PATH TO cs122b-spring18-team-55/shoppingcart.html WHEN TESTING ON YOUR LOCALHOST
 
     		}else {
     			// need to fetch the customers data
