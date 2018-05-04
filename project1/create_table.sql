@@ -124,3 +124,11 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
     
 ALTER TABLE `moviedb`.`cart` 
 ADD COLUMN `movieTitle` VARCHAR(100) NULL AFTER `quantity`
+
+ALTER TABLE `moviedb`.`cart` 
+ADD COLUMN `moviePoster` VARCHAR(400) NULL AFTER `movieTitle`;
+
+ALTER TABLE `moviedb`.`cart` 
+CHANGE COLUMN `moviePoster` `moviePoster` VARCHAR(2083) CHARACTER SET 'ascii' NULL DEFAULT NULL ;
+
+

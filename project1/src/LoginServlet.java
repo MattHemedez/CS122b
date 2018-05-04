@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
         */
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-18-188-219-180.us-east-2.compute.amazonaws.com:3306/moviedb";
+        String loginUrl = "jdbc:mysql://ec2-18-191-10-166.us-east-2.compute.amazonaws.com:3306/moviedb";
 
         
         // get the printwriter for writing response

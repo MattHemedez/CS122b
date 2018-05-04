@@ -34,7 +34,7 @@ public class MovieServerlet extends HttpServlet {
         // change this to your own mysql username and password
 		String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-18-220-219-13.us-east-2.compute.amazonaws.com:3306/moviedb";
+        String loginUrl = "jdbc:mysql://ec2-18-191-10-166.us-east-2.compute.amazonaws.com:3306/moviedb";
 		
         // set response mime type
         response.setContentType("text/html"); 
