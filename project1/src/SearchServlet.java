@@ -68,7 +68,7 @@ public class SearchServlet extends HttpServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 
-	        String loginUrl = "jdbc:mysql://ec2-13-59-47-166.us-east-2.compute.amazonaws.com:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 
 	        
 	        try 

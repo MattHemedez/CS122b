@@ -36,6 +36,8 @@ function handleResult(resultData) {
     let cartInfoElement = jQuery("#cart_table");
 //    <img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >
     for(var i=0; i<resultData.length; ++i){
+    	if(resultData[i]["moviePoster"] == "N/A")
+    		resultData[i]["moviePoster"] = "imgs/error/not-found.png";
     	cartInfoElement.append("<tr class='cartItem'><td><img style='width:100px;height:140px;' src=" + resultData[i]["moviePoster"]+ ">" +
     			"<form id='changeQuantity' name='changeQuantity' method='GET' action='api/cart'>"+
 					"<input type='submit' class='btn btn-sm btn-outline-secondary' name='deleteButton' style='width:40%;text-align:center;align:center;' value='delete' />"+

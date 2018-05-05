@@ -227,7 +227,7 @@
 	    	<div class="col-md-3">
 	    				
              	<div class="card mb-4 box-shadow">
-                	<img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%> >   <!-- DISPLAYS THE MOVIE IMAGE HERE -->
+                	<img class="card-img-top" src=<%=(!movieUrl.equals("N/A")?movieUrl:"imgs/error/not-found.png")%>>   <!-- DISPLAYS THE MOVIE IMAGE HERE -->
                 		<div class="card-body">
                   			<p class="card-text"><%="<br />" + (!plot.equals("N/A") ? plot:loremIpsum) %></p>  <!-- DISPLAYS THE MOVIE PLOT HERE -->
                   				<div class="d-flex justify-content-between align-items-center">
@@ -282,7 +282,7 @@
 	    
 	    <div class="container-fluid">
 		    <div class="row">
-		    	<div class="col-md-3 col-md-offset-5">
+		    	<div class="col-md-3 text-center col-md-offset-4">
 				    <nav aria-label="Lower Page navigation">
 						<ul class="pagination">
 							<li>

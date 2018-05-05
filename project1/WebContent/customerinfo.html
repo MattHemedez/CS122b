@@ -71,19 +71,27 @@
 							</div>
 							<form action="#" method="post" id="customerinfo">
 								<!-- Credit Card Number -->
-								Credit Card Number:<br>
-								<input type="text" name="creditcardnumber" maxlength="20" placeholder="1234-1234-1234-1234" pattern="[^A-z]+" title="Must contain only digits, spaces, and/or -"><br><br>
+								<div class="form-group">
+									<label for="creditcardnumber">Credit Card Number:</label><br>
+									<input id="creditcardnumber" class="form-control col-md-1" type="text" name="creditcardnumber" maxlength="20" placeholder="1234-1234-1234-1234" pattern="[^A-z]+" title="creditcardnumber"><br><br>
+								</div>
 								<!-- Expiration Date -->
-								Expiration Date:<br>
-								<input type="date" name="expirationdate"><br><br>
+								<div class="form-group">
+									<label for="expirationdate">Expiration Date:</label><br>
+									<input id="expirationdate" class="form-control col-md-1" type="date" name="expirationdate"><br><br>
+								</div>
 								<!-- First Name -->
-								First Name:<br>
-								<input type="text" name="firstname" maxlength="50" autocomplete="on" placeholder="Jane"><br><br>
+								<div class="form-group">
+									<label for="firstname">First Name:</label><br>
+									<input id="firstname" class="form-control col-md-1" type="text" name="firstname" maxlength="50" autocomplete="on" placeholder="Jane"><br><br>
+								</div>
 								<!-- Last Name -->
-								Last Name:<br>
-								<input type="text" name="lastname" maxlength="50" autocomplete="on" placeholder="Doe"><br><br>
-								<input type="submit" value="Submit">
-								<input type="reset">
+								<div class="form-group">
+									<label for="lastname">Last Name:</label><br>
+									<input id="lastname" class="form-control col-md-1" type="text" name="lastname" maxlength="50" autocomplete="on" placeholder="Doe"><br><br>
+								</div>
+								<input type="submit" value="Submit" class="btn btn-primary">
+								<input type="reset" class="btn btn-warning">
 								<br><br>
 							</form>
 						</div>

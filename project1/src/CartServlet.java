@@ -162,12 +162,6 @@ public class CartServlet extends HttpServlet {
                 rs.close();
                 statement.close();
     		}
-
-    		
-  
-    		
-    		
-    		
 			connection.close();
         }
         catch(Exception e){
