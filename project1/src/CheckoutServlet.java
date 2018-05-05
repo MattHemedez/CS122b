@@ -78,11 +78,10 @@ public class CheckoutServlet extends HttpServlet {
     			}
     			else
     			{
-    				
 	                JsonObject responseJsonObject = new JsonObject();
 	                responseJsonObject.addProperty("status", "success");
 	                responseJsonObject.addProperty("message", message);
-	                response.getWriter().write(responseJsonObject.toString());	    				
+	                response.getWriter().write(responseJsonObject.toString());
     			}
     		} 
     		else 
