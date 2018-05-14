@@ -10,12 +10,12 @@ function handleLoginResult(resultDataString) {
     console.log(resultDataJson["status"]);
 
     // If login success, redirect to index.html page
-    if (resultDataJson["status"] === "success") {
+    if (resultDataJson["status"] === "success" && resultDataJson["recaptcha"] === "success") {
         window.location.replace("index.html");
     }
     // If login fail, display error message on <div> with id "login_error_message"
     else {
-
+    
         console.log("show error message");
         console.log(resultDataJson["message"]);
         jQuery("#login_error_message").text(resultDataJson["message"]);

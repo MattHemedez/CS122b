@@ -22,14 +22,33 @@ public class LoginServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    	String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse); // Take out after trying
 
+        // Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+        	JsonObject responseJsonObject = new JsonObject();
+            responseJsonObject.addProperty("recaptcha", "fail");
+            responseJsonObject.addProperty("status", "fail");
+
+            responseJsonObject.addProperty("message", "recaptcha verification failed, please try again");
+
+
+            response.getWriter().write(responseJsonObject.toString());
+            return;
+        }
+    	
+    	
+    	
         /* This example only allows username/password to be test/test
         /  in the real project, you should talk to the database to verify username/password
         */
         String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
 
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        String loginUrl = "jdbc:mysql://18.188.117.207:3306/moviedb";
 
         
         // get the printwriter for writing response
@@ -66,6 +85,7 @@ public class LoginServlet extends HttpServlet {
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
+                responseJsonObject.addProperty("recaptcha", "success");
 
                 response.getWriter().write(responseJsonObject.toString());
             } else {

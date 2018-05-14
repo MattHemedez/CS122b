@@ -42,7 +42,8 @@ public class LoginFilter implements Filter {
 
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
         		|| requestURI.endsWith("login.css") || requestURI.endsWith("loginbg.png")
-        		|| requestURI.endsWith("api/login") || requestURI.endsWith("api/logout");
+        		|| requestURI.endsWith("api/login") || requestURI.endsWith("api/logout")
+        		|| requestURI.endsWith("recaptchaconstants.java") || requestURI.endsWith("RecaptchaVerifyUtils");
     }
 
     /**
