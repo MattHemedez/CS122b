@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
@@ -68,7 +69,7 @@ public class SearchServlet extends HttpServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://18.188.117.207:3306/moviedb?allowMultiQueries=true";
 
 	        
 	        try 
@@ -77,61 +78,78 @@ public class SearchServlet extends HttpServlet {
 	    		// create database connection
 	    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 	    		// declare statement
-	    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
-	    				   				ResultSet.CONCUR_READ_ONLY);
+	    		// Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	    		
 	    		// prepare query
-	    		String query ="FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating " + 
-	    				"FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm " + 
-	    				"WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND ";
-	    		if(title != null && !title.equals("")) 
-    				query += "m.title LIKE '%" + title + "%' AND ";
-    			
-	    		if(ftitle != null && !ftitle.equals("")) 
-    				query += "m.title LIKE '" + ftitle + "%' AND ";
-	    		
-    			if(year != null && !year.equals("")) 
-    				query += "m.year ='" + year + "' AND ";
-
-    			if(director != null && !director.equals("")) 
-    				query += "m.director LIKE '%" + director + "%' AND ";	
-    			
-    			if(genre != null && !genre.equals("")) {
-    				query += "g.name LIKE '" + genre + "' AND ";
-    			}
-
-    			if(starname != null && !starname.equals("")) {
-    				
-    				query += "s.name LIKE '%" +starname + "%'";
-    			}
-    			
-    			
-
-	    		
-
-	    		if(query.endsWith("AND ")) 
-	    		{
-	    			query = query.substring(0, query.length() - 4) + " ";
-	    			
-	    		}
-
-		
-	    		String selectQuery1 = "SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres " + query;
-	    		String selectQuery2 = "SELECT COUNT(DISTINCT m.id) AS total " + query + ") as m;";
 	    		String innerOrderBy = "m.";
+	    		
+	    		
 	    		
 	    		if(orderBy.equals("rating"))
 	    			innerOrderBy = "r.";
-	    		selectQuery1 += "ORDER BY " + innerOrderBy + orderBy + " " + order + " " + 
-	    				"LIMIT " + limit + " " +
-	    				"OFFSET " + offset + ") AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm " + 
-	    				"WHERE m.id = SM.movieId AND SM.starId = s.id AND g.id = gm.genreId AND gm.movieId = m.id " + 
-	    				"GROUP BY m.id " + 
-	    				"ORDER BY m." + orderBy + " " + order + ";";
+	    		
+	    		String query ="SELECT COUNT(DISTINCT m.id) AS total FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating " + 
+	    				"FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm " + 
+	    				"WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND m.title LIKE ? "
+	    				+ "AND m.year LIKE ? AND m.director LIKE ? AND g.name LIKE ? and s.name LIKE ? ) as m;";
+	    				
+	    				
+	    		String query2 ="SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres "
+	    				+ "FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating "
+	    				+ "FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm "
+	    				+ "WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND m.title LIKE ? "
+	    				+ "AND m.year LIKE ? AND m.director LIKE ? AND g.name LIKE ? and s.name LIKE ? "
+	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm "
+	    				+ "WHERE m.id = SM.movieId AND SM.starId = s.id AND g.id = gm.genreId AND gm.movieId = m.id "
+	    				+ "GROUP BY m.id ORDER BY m."+orderBy + " "+order + ";";
+	    		
+	    		
+	            PreparedStatement statement = connection.prepareStatement(query);
+
+	            PreparedStatement statement2 = connection.prepareStatement(query2);
+
+	            // Setting the title 
+	    		if(title != null && !title.equals("")) {
+//	    			query += "m.title LIKE '%" + title + "%' AND ";
+	    			statement.setString(1, "%" +title +"%");
+	    			statement2.setString(1, "%" +title +"%");
+
+	    			
+	    		}else if(ftitle != null && !ftitle.equals("")) {
+//	    			query += "m.title LIKE '" + ftitle + "%' AND ";
+	    			statement.setString(1, ftitle+"%");
+	    			statement2.setString(1, ftitle+"%");
+
+	    		}else {
+	    			statement.setString(1, "%%");
+	    			statement2.setString(1, "%%");
+	    		}
+	    		statement.setString(2, (year == null || year.equals("")? "%%": year)); // Year 
+	    		statement2.setString(2, (year == null || year.equals("")? "%%": year)); // Year 
+
+	    		statement.setString(3, (director == null || director.equals("")? "%%": "%" + director + "%")); // Director 
+	    		statement2.setString(3, (director == null || director.equals("")? "%%": "%" + director + "%")); // Director 
+
+	    		statement.setString(4, (genre == null || genre.equals("")? "%%": genre)); // Genre
+	    		statement2.setString(4, (genre == null || genre.equals("")? "%%": genre)); // Genre
+
+	    		statement.setString(5, (starname == null || starname.equals("")? "%%": "%" + starname + "%")); // Star Name 
+	    		statement2.setString(5, (starname == null || starname.equals("")? "%%": "%" + starname + "%")); // Star Name 
+
+
+	    		
+	    		statement2.setInt(6, Integer.parseInt(limit));
+	    		statement2.setInt(7, Integer.parseInt(offset));
+
+	    		
+	    		
+	    
 	    		
 	    		
 	    			    		
-	    		boolean hasResultSets = statement.execute(selectQuery2 + selectQuery1);
-	    		ResultSet resultSet = statement.getResultSet();
+	    		ResultSet resultSet = statement.executeQuery();
+	    		
+	    		System.out.println(statement.toString());
 	    		
 	    		int totalResults = 0;
 	    		int totalPages = 0;
@@ -141,9 +159,11 @@ public class SearchServlet extends HttpServlet {
 	    		}
 	    		totalPages = (int)Math.ceil((1.0 * totalResults)/ (1.0 * Integer.parseInt(limit)));
 	    		
-	    		statement.getMoreResults();
-	    		resultSet = statement.getResultSet();
-	    		
+//	    		statement.getMoreResults();
+	    		System.out.println("Q2: " + statement2.toString());
+
+	    		resultSet = statement2.executeQuery();
+
 	    		String url =request.getScheme() + "://" +   // "http" + "://
 	    	             request.getServerName() +       // "myhost"
 	    	             ":" +                           // ":"
@@ -219,6 +239,8 @@ public class SearchServlet extends HttpServlet {
 	                dispatcher.forward(request, response);
 	            }	    		
 	    		statement.close();
+	    		statement2.close();
+
 	    		connection.close();
 	    	}
 	        catch (Exception e) 
