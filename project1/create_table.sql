@@ -121,14 +121,22 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`cart` (
     REFERENCES `moviedb`.`customers` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
-    
-ALTER TABLE `moviedb`.`cart` 
-ADD COLUMN `movieTitle` VARCHAR(100) NULL AFTER `quantity`
 
-ALTER TABLE `moviedb`.`cart` 
-ADD COLUMN `moviePoster` VARCHAR(400) NULL AFTER `movieTitle`;
+CREATE TABLE `moviedb`.`employees` (
+  `email` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(20) NOT NULL,
+  `fullname` VARCHAR(100) NULL,
+  PRIMARY KEY (`email`));
 
-ALTER TABLE `moviedb`.`cart` 
-CHANGE COLUMN `moviePoster` `moviePoster` VARCHAR(2083) CHARACTER SET 'ascii' NULL DEFAULT NULL ;
+#ALTER TABLE 'moviedb'.'cart'
+#  ADD COLUMN `movieTitle` VARCHAR(100) NULL AFTER `quantity`;
+
+#ALTER TABLE `moviedb`.`cart` 
+#  ADD COLUMN `moviePoster` VARCHAR(400) NULL AFTER 'movieTitle';
+
+#ALTER TABLE `moviedb`.`cart` 
+#  CHANGE COLUMN `moviePoster` `moviePoster` VARCHAR(2083) CHARACTER SET 'ascii' NULL DEFAULT NULL ;
+
+
 
 

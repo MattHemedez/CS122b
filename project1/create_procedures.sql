@@ -1,8 +1,10 @@
 USE moviedb;
+DROP PROCEDURE IF EXISTS checkout;
+DROP PROCEDURE IF EXISTS add_movie;
+DROP PROCEDURE IF EXISTS add_star;
+
 
 # Checkout procedure
-DROP PROCEDURE IF EXISTS checkout;
-
 DELIMITER $$
 CREATE PROCEDURE checkout (IN uId INT(11), cId VARCHAR(20), 
 	fName VARCHAR(50), lName VARCHAR(50), exp DATE)
@@ -41,9 +43,8 @@ BEGIN
     END IF;
 END$$
 
-# add_movie procedure
-DROP PROCEDURE IF EXISTS add_movie;
 
+# add_movie procedure
 DELIMITER $$
 CREATE PROCEDURE add_movie (IN mov_title VARCHAR(100), IN mov_year int(11), 
 	IN mov_director VARCHAR(100), IN mov_star_name VARCHAR(100), IN mov_genre_name VARCHAR(32))
@@ -96,9 +97,8 @@ BEGIN
     END IF;
 END$$
 
-# add_star procedure
-DROP PROCEDURE IF EXISTS add_star;
 
+# add_star procedure
 DELIMITER $$
 CREATE PROCEDURE add_star (IN star_name VARCHAR(100), IN star_birth_year int(11))
 COMMENT "Allows an employee to add a star into the system"
@@ -121,3 +121,4 @@ BEGIN
 		SELECT 'SUCCESS' AS status, 'Star added to database.' AS message;
     END IF;
 END$$
+
