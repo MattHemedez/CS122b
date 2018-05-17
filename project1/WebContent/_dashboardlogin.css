@@ -1,0 +1,41 @@
+@charset "ISO-8859-1";
+
+body {
+ background-image: url("imgs/bgs/dashboard_login.jpg");
+ background-size: cover;
+}
+
+#dashboardloginParent{
+	display: block;
+	text-align: center;
+	font-family: Courier New, Verdana;
+}
+#dashboardlogin_form label,h2{
+	color:#FFF;
+}
+
+#dashboardlogin_form{
+    width:320px;
+    height: 320px;
+    background: rgba(0,0,0,0.5);	
+	
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform:translate(-50%,-50%);
+    box-sizing: border-box;
+}
+
+#dashboardlogin_error_message{
+	top: 75%;
+	left:50%;
+	transform:translate(-50%,-50%);	
+	color:white;
+	position:absolute;
+}
+.g-recaptcha{
+	top: 125%;
+	left:50%;
+	position: absolute;
+	transform:translate(-50%,-50%);
+}

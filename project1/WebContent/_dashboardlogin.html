@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="UTF-8">
+	    <title>Login to Dashboard For Fabflix</title>
+	    <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+		<link rel = "stylesheet" type = "text/css" href = "_dashboardlogin.css" />
+	</head>
+	<body>
+	
+	<!-- Disable the default action because our JS function will handle it. -->
+	<div id="dashboardloginParent">
+		<form id="dashboardlogin_form" method="post" action="#">
+			<h2>Login to Fablix Dashboard<br></br></h2>
+	    	<label><b>Email</b></label>
+	    	<input type="text" placeholder="Enter Email Address" name="username">
+	    	<br>
+	    	<label><b>Password</b></label>
+	    	<input type="password" placeholder="Enter Password" name="password">
+	    	<br>
+	    	<input type="submit" value="Login">
+	    	<div id="dashboardlogin_error_message" style="color:white;"></div>
+			<div class="g-recaptcha" data-sitekey="6LdeAFkUAAAAAFq9PXQTeOPCYu8ubYXo8hshfjjR"></div>
+		</form>
+	</div>
+		
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- include our own JS file -->
+	<script src="./_dashboardlogin.js"></script>
+	
+	</body>
+</html>

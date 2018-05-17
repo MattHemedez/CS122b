@@ -18,20 +18,28 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
-
+        
         // Check if this URL is allowed to access without logging in
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
+        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI()) && httpRequest.getSession().getAttribute("employee") == null ) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
         }
-
+        
+        // Check if user is an employee
+        if (httpRequest.getSession().getAttribute("employee") == null && this.isUrlAllowedWithoutEmployeeLogin(httpRequest.getRequestURI())) {
+            // Keep default action: pass along the filter chain
+            chain.doFilter(request, response);
+            return;
+        }
+        
         // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession().getAttribute("user") == null) {
+        if (httpRequest.getSession().getAttribute("user") == null && httpRequest.getSession().getAttribute("employee") == null) {
             httpResponse.sendRedirect("login.html");
         } else {
             chain.doFilter(request, response);
         }
+        
     }
 
     // Setup your own rules here to allow accessing some resources without logging in
@@ -39,13 +47,19 @@ public class LoginFilter implements Filter {
     // You might also want to allow some CSS files, etc..
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
         		|| requestURI.endsWith("login.css") || requestURI.endsWith("loginbg.png")
         		|| requestURI.endsWith("api/login") || requestURI.endsWith("api/logout")
-        		|| requestURI.endsWith("recaptchaconstants.java") || requestURI.endsWith("RecaptchaVerifyUtils");
+        		|| requestURI.endsWith("recaptchaconstants.java") || requestURI.endsWith("RecaptchaVerifyUtils")
+        		|| requestURI.endsWith("dashboard_login.jpg") || requestURI.endsWith("api/dashboard_login");
     }
 
+    
+    private boolean isUrlAllowedWithoutEmployeeLogin(String requestURI) {
+        requestURI = requestURI.toLowerCase();
+        return !requestURI.endsWith("_dashboard.html") && !requestURI.endsWith("_dashboard.css") 
+        		&& !requestURI.endsWith("_dashboard.js") && !requestURI.endsWith("api/_dashboard");
+    }
     /**
      * We need to have these function because this class implements Filter.
      * But we don't need to put any code in them.

@@ -5,12 +5,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 //
 @WebServlet(name = "CheckoutServlet", urlPatterns = "/api/checkout")
@@ -31,10 +29,6 @@ public class CheckoutServlet extends HttpServlet {
         String loginPasswd = "mypassword";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
-        
-        // get the printwriter for writing response
-        PrintWriter out = response.getWriter();
-
         try 
         {
     		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -47,8 +41,6 @@ public class CheckoutServlet extends HttpServlet {
 	        String lastName = request.getParameter("lastname");
 	        String expDate = request.getParameter("expirationdate");
 	        String userId = ((User)request.getSession().getAttribute("user")).getId();
-
-	        String query = "SELECT 'true' AS Success FROM creditcards AS c WHERE c.id = ? AND c.firstName = ? AND c.lastName = ? AND c.expiration = ?;";
 	        		
 	        // Declare our statement
 	     	PreparedStatement statement = connection.prepareCall("{call checkout(?, ?, ?, ?, ?)}");

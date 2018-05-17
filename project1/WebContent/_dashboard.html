@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="main.css">
+		<link rel="stylesheet" type="text/css" href="_dashboard.css">
+		<meta charset="ISO-8859-1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Fabflix</title>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<h1><b>Employee Dashboard</b></h1>
+			<br>
+		</div> 
+		
+		<div id="Database controls" class="container-fluid">
+			<!-- Show database metadata -->
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<h2><b>Fabflix's Database Metadata</b></h2>
+						</div>
+						<div class="panel-body">
+							<div id="getMetaData_status_message">
+								<!-- RESERVED FOR STATUS MESSAGE -->
+							</div>
+							<div id="metadataTable">
+							</div>
+						</div>
+					</div>		
+				</div>
+			</div>
+			<!-- Add Single Star -->
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">Add a Star: <b id="addStarCount">0</b></h3>
+						</div>
+						<div class="panel-body">
+							<div id="addStar_status_message">
+								<!-- RESERVED FOR STATUS MESSAGE -->
+							</div>
+							<form action="#" method="post" id="addStar">
+								<input type="hidden" name="Request" value="addStar">
+								<!-- Star Name VARCHAR(100) -->
+								<div class="form-group">
+									<label for="starName">Name of Star:</label><br>
+									<input id="starName" class="form-control col-md-1" type="text" name="starName" maxlength="100" placeholder="Daniel Kaluuya" title="starName"><br><br>
+								</div>
+								<!-- Star Birth Year INT(11) -->
+								<div class="form-group">
+									<label for="starBirthYear">Birth Year:</label><br>
+									<input id="starBirthYear" class="form-control col-md-1" type="number" placeholder="2018" name="starBirthYear" min="1000" max="2999"><br><br>
+								</div>
+								<input type="submit" value="Submit" class="btn btn-primary">
+								<input type="reset" class="btn btn-warning">
+								<br><br>
+							</form>
+						</div>
+					</div>		
+				</div>
+			</div>
+			<!-- Add Single Movie -->
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">Add a Movie: <b id="addMovieCount">0</b></h3>
+						</div>
+						<div class="panel-body">
+							<div id="addMovie_status_message">
+								<!-- RESERVED FOR STATUS MESSAGE -->
+							</div>
+							<form action="#" method="post" id="addMovie">
+								<input type="hidden" name="Request" value="addMovie">
+								<!-- Movie Title VARCHAR(100) -->
+								<div class="form-group">
+									<label for="movieTitle">Movie Title:</label><br>
+									<input id="movieTitle" class="form-control col-md-1" type="text" name="movieTitle" maxlength="100" placeholder="Die Hard" title="movieTitle"><br><br>
+								</div>
+								<!-- Movie Year INT(11) -->
+								<div class="form-group">
+									<label for="movieYear">Year:</label><br>
+									<input id="movieYear" class="form-control col-md-1" type="number" placeholder="2018" name="movieYear" min="1000" max="2999"><br><br>
+								</div>
+								<!-- Movie Director VARCHAR(100) -->
+								<div class="form-group">
+									<label for="movieDirector">Director:</label><br>
+									<input id="movieDirector" class="form-control col-md-1" type="text" name="movieDirector" maxlength="100" autocomplete="on" placeholder="Quentin Tarantino"><br><br>
+								</div>
+								<!-- Movie Star Name VARCHAR(100) -->
+								<div class="form-group">
+									<label for="movieStarName">Associated Movie Star:</label><br>
+									<input id="movieStarName" class="form-control col-md-1" type="text" name="movieStarName" maxlength="100" autocomplete="on" placeholder="Daniel Kaluuya"><br><br>
+								</div>
+								<!-- Movie Genre VARCHAR(32) -->
+								<div class="form-group">
+									<label for="movieGenre">Genre of Movie:</label><br>									
+									<input list="genres" id="movieGenre" class="form-control col-md-1" type="text" name="movieGenre" maxlength="32" placeholder="Comedy"><br><br>
+									<datalist id="genres">
+										<option value="Action">
+										<option value="Adult">
+										<option value="Adventure">
+										<option value="Animation">
+										<option value="Biography">
+										<option value="Comedy">
+										<option value="Crime">
+										<option value="Documentary">
+										<option value="Drama">
+										<option value="Family">
+										<option value="Fantasy">
+										<option value="History">
+										<option value="Horror">
+										<option value="Music">
+										<option value="Musical">
+										<option value="Mystery">
+										<option value="Reality-TV">
+										<option value="Romance">
+										<option value="Sci-Fi">
+										<option value="Sport">
+										<option value="Thriller">
+										<option value="War">
+										<option value="Western">										
+									</datalist>
+								</div>
+								<input type="submit" value="Submit" class="btn btn-primary">
+								<input type="reset" class="btn btn-warning">
+								<br><br>
+							</form>
+						</div>
+					</div>		
+				</div>
+			</div>
+		</div>
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- Normal library -->
+		<script src="_dashboard.js"></script>
+	</body>
+</html>
