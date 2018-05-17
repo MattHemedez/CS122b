@@ -21,10 +21,14 @@
 				<div class="col-md-10 col-md-offset-1">
 					<div class="panel panel-success">
 						<div class="panel-heading">
-							<h3 class="panel-title">Fabflix's Database Metadata</h3>
+							<h2><b>Fabflix's Database Metadata</b></h2>
 						</div>
 						<div class="panel-body">
-							
+							<div id="getMetaData_status_message">
+								<!-- RESERVED FOR STATUS MESSAGE -->
+							</div>
+							<div id="metadataTable">
+							</div>
 						</div>
 					</div>		
 				</div>
@@ -34,13 +38,14 @@
 				<div class="col-md-10 col-md-offset-1">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							<h3 class="panel-title">Add a Star</h3>
+							<h3 class="panel-title">Add a Star: <b id="addStarCount">0</b></h3>
 						</div>
 						<div class="panel-body">
 							<div id="addStar_status_message">
 								<!-- RESERVED FOR STATUS MESSAGE -->
 							</div>
 							<form action="#" method="post" id="addStar">
+								<input type="hidden" name="Request" value="addStar">
 								<!-- Star Name VARCHAR(100) -->
 								<div class="form-group">
 									<label for="starName">Name of Star:</label><br>
@@ -64,13 +69,14 @@
 				<div class="col-md-10 col-md-offset-1">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							<h3 class="panel-title">Add a Movie</h3>
+							<h3 class="panel-title">Add a Movie: <b id="addMovieCount">0</b></h3>
 						</div>
 						<div class="panel-body">
 							<div id="addMovie_status_message">
 								<!-- RESERVED FOR STATUS MESSAGE -->
 							</div>
 							<form action="#" method="post" id="addMovie">
+								<input type="hidden" name="Request" value="addMovie">
 								<!-- Movie Title VARCHAR(100) -->
 								<div class="form-group">
 									<label for="movieTitle">Movie Title:</label><br>
@@ -93,8 +99,33 @@
 								</div>
 								<!-- Movie Genre VARCHAR(32) -->
 								<div class="form-group">
-									<label for="movieGenre">Genre of Movie:</label><br>
-									<input id="movieGenre" class="form-control col-md-1" type="text" name="movieGenre" maxlength="32" autocomplete="on" placeholder="Comedy"><br><br>
+									<label for="movieGenre">Genre of Movie:</label><br>									
+									<input list="genres" id="movieGenre" class="form-control col-md-1" type="text" name="movieGenre" maxlength="32" placeholder="Comedy"><br><br>
+									<datalist id="genres">
+										<option value="Action">
+										<option value="Adult">
+										<option value="Adventure">
+										<option value="Animation">
+										<option value="Biography">
+										<option value="Comedy">
+										<option value="Crime">
+										<option value="Documentary">
+										<option value="Drama">
+										<option value="Family">
+										<option value="Fantasy">
+										<option value="History">
+										<option value="Horror">
+										<option value="Music">
+										<option value="Musical">
+										<option value="Mystery">
+										<option value="Reality-TV">
+										<option value="Romance">
+										<option value="Sci-Fi">
+										<option value="Sport">
+										<option value="Thriller">
+										<option value="War">
+										<option value="Western">										
+									</datalist>
 								</div>
 								<input type="submit" value="Submit" class="btn btn-primary">
 								<input type="reset" class="btn btn-warning">

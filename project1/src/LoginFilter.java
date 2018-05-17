@@ -20,14 +20,14 @@ public class LoginFilter implements Filter {
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
         
         // Check if this URL is allowed to access without logging in
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
+        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI()) && httpRequest.getSession().getAttribute("employee") == null ) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
         }
         
         // Check if user is an employee
-        if (httpRequest.getSession().getAttribute("employee") != null && this.isUrlAllowedWithoutEmployeeLogin(httpRequest.getRequestURI())) {
+        if (httpRequest.getSession().getAttribute("employee") == null && this.isUrlAllowedWithoutEmployeeLogin(httpRequest.getRequestURI())) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
@@ -47,7 +47,6 @@ public class LoginFilter implements Filter {
     // You might also want to allow some CSS files, etc..
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
         		|| requestURI.endsWith("login.css") || requestURI.endsWith("loginbg.png")
         		|| requestURI.endsWith("api/login") || requestURI.endsWith("api/logout")
@@ -58,7 +57,6 @@ public class LoginFilter implements Filter {
     
     private boolean isUrlAllowedWithoutEmployeeLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-
         return !requestURI.endsWith("_dashboard.html") && !requestURI.endsWith("_dashboard.css") 
         		&& !requestURI.endsWith("_dashboard.js") && !requestURI.endsWith("api/_dashboard");
     }

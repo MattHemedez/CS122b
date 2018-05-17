@@ -106,7 +106,10 @@ COMMENT "Allows an employee to add a star into the system"
 BEGIN
 	DECLARE star_exists CHAR(1);
     DECLARE star_id VARCHAR(10);
-    
+    IF(star_birth_year = '' || star_birth_year = 0) THEN
+		SET star_birth_year = NULL;
+    END IF;
+
     SELECT CONCAT("nm", SUBSTRING(id, 3, CHAR_LENGTH(id) - 2 -CHAR_LENGTH(SUBSTRING(id, 3, CHAR_LENGTH(id) - 2) + 1)), SUBSTRING(id, 3, CHAR_LENGTH(id) - 2) + 1) INTO star_id FROM stars ORDER BY id DESC LIMIT 1;
     SELECT DISTINCT 't' INTO star_exists FROM stars AS s WHERE s.name = star_name AND s.birthYear = star_birth_year;
     
