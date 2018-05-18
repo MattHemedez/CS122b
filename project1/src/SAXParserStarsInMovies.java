@@ -32,10 +32,17 @@ public class SAXParserStarsInMovies extends DefaultHandler {
 
 	private static MysqlDataSource dataSource;
 	
+	private HashMap<String,String> starsIdMovie;
 
-    public SAXParserStarsInMovies() {
+	private HashMap<String,String> starsInMovie;
+
+    public SAXParserStarsInMovies() throws SQLException {
     	myStars = new ArrayList<StarsInMovies>();
+        starsIdMovie = new HashMap<String,String>();
+        starsInMovie = new HashMap<String,String>();
         initializeDS();
+	    Connection conn = dataSource.getConnection();
+	    initializeStars(conn);
     }
     
     public void initializeDS() {    	
@@ -44,8 +51,8 @@ public class SAXParserStarsInMovies extends DefaultHandler {
     	dataSource.setServerName("localhost");
     	dataSource.setPortNumber(3306);
     	dataSource.setDatabaseName("moviedb");
-        dataSource.setUser("mytestuser");
-        dataSource.setPassword("mypassword");
+        dataSource.setUser("root");
+        dataSource.setPassword("asd123");
     
     }
     public void runExample(Connection c)throws FileNotFoundException, SQLException{
@@ -101,8 +108,8 @@ public class SAXParserStarsInMovies extends DefaultHandler {
             while(it.hasNext()){
             	StarsInMovies currStar = it.next();
             	
-            	String starID = getStarId(c, currStar.getId(), currStar.getName()); // Use the movieID and starName to find the star's ID
-            	if(!starID.equals("null") && !alreadyExists(c,starID, currStar.getId()))
+            	String starID = getStarId(currStar.getName()); // Use the movieID and starName to find the star's ID
+            	if(starID!= null && !alreadyExists(starID,currStar.getId()))
             		stars_in_movie.println(starID + "," + currStar.getId());  // StarID-MovieID format
 
             }
@@ -111,38 +118,52 @@ public class SAXParserStarsInMovies extends DefaultHandler {
             if(stars_in_movie!=null)
             	stars_in_movie.close();
 
-            System.out.println("Finished Parsing actors63.xml");
+            System.out.println("Finished Parsing casts124.xml");
         }
     }
     
     
-    private boolean alreadyExists(Connection c, String starId, String movieId) throws SQLException {
-    	String query="SELECT * FROM moviedb.stars_in_movies WHERE starId= ? AND movieID=?;";
-    	PreparedStatement stmt = c.prepareStatement(query);
-    	stmt.setString(1, starId);
-    	stmt.setString(2, movieId);
-    	ResultSet actors = stmt.executeQuery();
-    	if(actors.next())
-    		return true; // if star in movies already exists
- 
+    private boolean alreadyExists(String starId, String movieId) {
+    	if(starsInMovie.get(starId) == movieId) {
+    		return true;
+    	}
     	return false;
+    	
     }
 
+    private String getStarId(String name) {
+    	if(starsIdMovie.get(name) != null) {
+    		return starsIdMovie.get(name);
+    	}
+    	return null;
+    }
+    
+    
     // Retrieves the StarID in that Movie
-    private String getStarId(Connection c,String movieId, String starName) throws SQLException {    	
-    	String query = "SELECT sm.id " + 
-    					"FROM(SELECT s.id FROM movies AS m, stars AS s " + 
-    					"WHERE m.id= ? AND s.name=?)AS sm;";
-    	
+    private void initializeStars(Connection c) throws SQLException {    	
+    	String query = "SELECT id,name FROM moviedb.stars;";
     	PreparedStatement stmt = c.prepareStatement(query);
-    	stmt.setString(1, movieId);
-    	stmt.setString(2, starName);
-    	
-
     	ResultSet actor = stmt.executeQuery();
-    	if(actor.next())
-    		return actor.getString("id"); // if movie exist return true
-    	return "null";
+    	while(actor.next()) {
+    		String id = actor.getString("id");
+    		String name = actor.getString("name");
+    		starsIdMovie.put(name,id);
+    	}
+    	query = "SELECT starId,movieId FROM moviedb.stars_in_movies;";
+    	stmt = c.prepareStatement(query);
+    	ResultSet inMovie = stmt.executeQuery();
+
+    	while(inMovie.next()) {
+    		String starId = inMovie.getString("starId");
+    		String movieId = inMovie.getString("movieId");
+    		starsInMovie.put(starId, movieId);
+    		
+    	}
+    	
+    	
+    	
+    	stmt.close();
+    	
     }
     
 
@@ -181,7 +202,7 @@ public class SAXParserStarsInMovies extends DefaultHandler {
     
 
 
-    public static void main(String[] args)throws FileNotFoundException{
+    public static void main(String[] args)throws FileNotFoundException, SQLException{
     	SAXParserStarsInMovies spe = new SAXParserStarsInMovies();
 
     	
