@@ -21,33 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SAXParserMain extends DefaultHandler {
-	private HashMap<String, Integer> knownGenres = new HashMap<String, Integer>() {{
-	    put("Action",1);
-	    put("Adult",2);
-	    put("Adventure",3);
-	    put("Animation",4);
-	    put("Biography",5);
-	    put("Comedy",6);
-	    put("Crime",7);
-	    put("Documentary",8);
-	    put("Drama",9);
-	    put("Family",10);
-	    put("Fantasy",11);
-	    put("History",12);
-	    put("Horror",13);
-	    put("Music",14);
-	    put("Musical",15);
-	    put("Mystery",16);
-	    put("Reality-TV",17);
-	    put("Romance",18);
-	    put("Sci-Fi",19);
-	    put("Sport",20);
-	    put("Thriller",21);
-	    put("War", 22);
-	    put("Western",23);
-
-	}};
- 
+	private HashMap<String, Integer> knownGenres = new HashMap<String, Integer>();
     List<Movies> myMovies;
 
     private String tempVal;
@@ -64,8 +38,34 @@ public class SAXParserMain extends DefaultHandler {
         myMovies = new ArrayList<Movies>();
         movieGenres = new ArrayList<String>();
         initializeDS();
+        initializeGenres();
     }
-    
+    public void initializeGenres() {
+    	knownGenres.put("Action",1);
+    	knownGenres.put("Adult",2);
+    	knownGenres.put("Adventure",3);
+    	knownGenres.put("Animation",4);
+    	knownGenres.put("Biography",5);
+    	knownGenres.put("Comedy",6);
+    	knownGenres.put("Crime",7);
+    	knownGenres.put("Documentary",8);
+    	knownGenres.put("Drama",9);
+    	knownGenres.put("Family",10);
+    	knownGenres.put("Fantasy",11);
+    	knownGenres.put("History",12);
+    	knownGenres.put("Horror",13);
+    	knownGenres.put("Music",14);
+    	knownGenres.put("Musical",15);
+    	knownGenres.put("Mystery",16);
+    	knownGenres.put("Reality-TV",17);
+    	knownGenres.put("Romance",18);
+    	knownGenres.put("Sci-Fi",19);
+    	knownGenres.put("Sport",20);
+    	knownGenres.put("Thriller",21);
+    	knownGenres.put("War", 22);
+    	knownGenres.put("Western",23);
+    	
+    }
     public void initializeDS() {
     	dataSource = new MysqlDataSource();
     	// Creating the properties 
