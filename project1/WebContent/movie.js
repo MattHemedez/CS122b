@@ -56,9 +56,18 @@ function handleResult(resultData) {
     // Concatenate the html tags with resultData jsonObject to create table rows
     for (let i = 0; i < resultData["movie_stars"].length; i++) {
         let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th><a href=\"star.html?id=" + resultData["movie_stars"][i]["star_id"] + "\">" + resultData["movie_stars"][i]["star_name"] + "</a></th>";
-        rowHTML += "</tr>";
+        if(resultData["movie_stars"][i]["star_id"] != "N/A")
+    	{
+        	rowHTML += "<tr>";
+            rowHTML += "<th><a href=\"star.html?id=" + resultData["movie_stars"][i]["star_id"] + "\">" + resultData["movie_stars"][i]["star_name"] + "</a></th>";
+            rowHTML += "</tr>";
+    	}
+        else
+    	{
+        	rowHTML += "<tr>";
+            rowHTML += "<th>No stars found</th>";
+            rowHTML += "</tr>";
+    	}
 
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
@@ -73,9 +82,19 @@ function handleResult(resultData) {
     // Concatenate the html tags with resultData jsonObject to create table rows
     for (let i = 0; i < resultData["movie_genres"].length; i++) {
         let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th><a href=\"SearchServlet?genre=" + resultData["movie_genres"][i]["genre_name"] + "\">" + resultData["movie_genres"][i]["genre_name"] + "</a></th>";
-        rowHTML += "</tr>";
+        
+        if(resultData["movie_genres"][i]["genre_name"] != "N/A")
+        {
+        	rowHTML += "<tr>";
+            rowHTML += "<th><a href=\"SearchServlet?genre=" + resultData["movie_genres"][i]["genre_name"] + "\">" + resultData["movie_genres"][i]["genre_name"] + "</a></th>";
+            rowHTML += "</tr>";
+        }
+        else
+    	{
+        	rowHTML += "<tr>";
+            rowHTML += "<th>No genres found</th>";
+            rowHTML += "</tr>";
+    	}
 
         // Append the row created to the table body, which will refresh the page
         genreTableBodyElement.append(rowHTML);
