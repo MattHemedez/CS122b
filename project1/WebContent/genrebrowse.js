@@ -37,7 +37,6 @@ function handleGenresResult(resultData) {
         
         for(var i=0; i<resultData.genres.length; ++i)
         {
-        	genreTableContent += '<option value="' + resultData.genres[i]["name"] + '">' + resultData.genres[i]["name"] + '</option>';
         	var genreImgUrl = '';
         	
         	if(!(resultData.genres[i]["name"] in genreImgUrlDict))
