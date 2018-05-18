@@ -44,8 +44,8 @@ public class SAXParserStarsInMovies extends DefaultHandler {
     	dataSource.setServerName("localhost");
     	dataSource.setPortNumber(3306);
     	dataSource.setDatabaseName("moviedb");
-        dataSource.setUser("root");
-        dataSource.setPassword("asd123");
+        dataSource.setUser("mytestuser");
+        dataSource.setPassword("mypassword");
     
     }
     public void runExample(Connection c)throws FileNotFoundException, SQLException{
@@ -92,7 +92,7 @@ public class SAXParserStarsInMovies extends DefaultHandler {
     private void writeData(Connection c)throws FileNotFoundException, SQLException{
         PrintWriter stars_in_movie = null;
         try{
-            System.out.println("Writing actors to file 'actors.csv' ...");
+            System.out.println("Writing actor relations to file 'stars_in_movie.csv' ...");
 
             stars_in_movie = new PrintWriter(new File("stars_in_movie.csv")) ; 
             

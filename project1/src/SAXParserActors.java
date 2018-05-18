@@ -45,8 +45,8 @@ public class SAXParserActors extends DefaultHandler {
     	dataSource.setServerName("localhost");
     	dataSource.setPortNumber(3306);
     	dataSource.setDatabaseName("moviedb");
-        dataSource.setUser("root");
-        dataSource.setPassword("asd123");
+        dataSource.setUser("mytestuser");
+        dataSource.setPassword("mypassword");
     
     }
     public void runExample(Connection c)throws FileNotFoundException, SQLException{
@@ -198,14 +198,8 @@ public class SAXParserActors extends DefaultHandler {
         	if(tempVal.matches("[0-9]+") && tempVal.length() >0)
         		tempActors.setDOB(tempVal);
         	else
-        		tempActors.setDOB("\\N");
+        		tempActors.setDOB("0");
         }
-        	
-        	
-        	
-        	
-        
-
     }
     
 
