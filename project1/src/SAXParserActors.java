@@ -129,13 +129,13 @@ public class SAXParserActors extends DefaultHandler {
     // Checks for duplicate movies, skip if already in database
     private boolean existingActor(Connection c,String starName, String DOB) throws SQLException {
     	if(DOB == null) {
-    		tempActors.setDOB("\\N");
-    		DOB = "\\N";
+    		tempActors.setDOB("0");
+    		DOB = "0";
     	}
     		
     	ResultSet actor = null;
     	
-    	if(DOB.equals("\\N")) {
+    	if(DOB.equals("0")) {
     		String query = "SELECT * FROM moviedb.stars AS s WHERE s.name=? AND s.birthYear IS NULL;";
         	PreparedStatement stmt = c.prepareStatement(query);
 
