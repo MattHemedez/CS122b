@@ -69,7 +69,7 @@ public class SearchServlet extends HttpServlet {
 	        String loginUser = "mytestuser";
 	        String loginPasswd = "mypassword";
 
-	        String loginUrl = "jdbc:mysql://18.188.117.207:3306/moviedb?allowMultiQueries=true";
+	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 
 	        
 	        try 
@@ -88,24 +88,21 @@ public class SearchServlet extends HttpServlet {
 	    		if(orderBy.equals("rating"))
 	    			innerOrderBy = "r.";
 	    		
-	    		String query ="SELECT COUNT(DISTINCT m.id) AS total FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating " + 
-	    				"FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm " + 
-	    				"WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND m.title LIKE ? "
-	    				+ "AND m.year LIKE ? AND m.director LIKE ? AND g.name LIKE ? and s.name LIKE ? ) as m;";
+	    		String query ="SELECT COUNT(DISTINCT m.id) AS total "
+	    				+ "FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating "
+	    				+ "FROM movies AS m LEFT JOIN ratings AS r ON m.id = r.movieId LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id " 
+	    				+ "WHERE (m.title LIKE ? OR m.title IS NULL) AND (m.year LIKE ? OR m.year IS NULL) AND (m.director LIKE ? OR m.director IS NULL) AND (g.name LIKE ? OR g.name IS NULL) AND (s.name LIKE ? OR s.name IS NULL)) AS m;";
 	    				
 	    				
 	    		String query2 ="SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres "
 	    				+ "FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating "
-	    				+ "FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm "
-	    				+ "WHERE m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id AND m.title LIKE ? "
-	    				+ "AND m.year LIKE ? AND m.director LIKE ? AND g.name LIKE ? and s.name LIKE ? "
-	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m, stars AS s, stars_in_movies AS SM, genres AS g, genres_in_movies AS gm "
-	    				+ "WHERE m.id = SM.movieId AND SM.starId = s.id AND g.id = gm.genreId AND gm.movieId = m.id "
+	    				+ "FROM movies AS m LEFT JOIN ratings AS r ON m.id = r.movieId LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
+	    				+ "WHERE (m.title LIKE ? OR m.title IS NULL) AND (m.year LIKE ? OR m.year IS NULL) AND (m.director LIKE ? OR m.director IS NULL) AND (g.name LIKE ? OR g.name IS NULL) AND (s.name LIKE ? OR s.name IS NULL)"
+	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
 	    				+ "GROUP BY m.id ORDER BY m."+orderBy + " "+order + ";";
 	    		
 	    		
 	            PreparedStatement statement = connection.prepareStatement(query);
-
 	            PreparedStatement statement2 = connection.prepareStatement(query2);
 
 	            // Setting the title 
@@ -160,6 +157,7 @@ public class SearchServlet extends HttpServlet {
 	    		totalPages = (int)Math.ceil((1.0 * totalResults)/ (1.0 * Integer.parseInt(limit)));
 	    		
 //	    		statement.getMoreResults();
+	    		System.out.println(totalResults);
 	    		System.out.println("Q2: " + statement2.toString());
 
 	    		resultSet = statement2.executeQuery();
