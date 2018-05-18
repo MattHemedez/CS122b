@@ -47,7 +47,9 @@ public class SingleMovieServlet extends HttpServlet {
     		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
 			// Construct a query with parameter represented by "?"
-    		String query = "SELECT m.id, m.title, m.director, m.year, r.numVotes, r.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ', ') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres FROM movies AS m, stars AS s, stars_in_movies AS sm, ratings AS r, genres AS g, genres_in_movies AS gm WHERE m.id = ? AND m.id = sm.movieId AND sm.starId = s.id AND r.movieId = m.id AND g.id = gm.genreId AND gm.movieId = m.id GROUP BY m.id;";
+    		String query = "SELECT m.id, m.title, m.director, m.year, r.numVotes, r.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ', ') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres "
+    				+ "FROM movies AS m LEFT JOIN ratings AS r ON m.id = r.movieId LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
+    				+ "WHERE m.id = ?;";
 
 			// Declare our statement
 			PreparedStatement statement = connection.prepareStatement(query);
@@ -67,29 +69,56 @@ public class SingleMovieServlet extends HttpServlet {
 			String movieYear = rs.getString("year");
 			String movieDirector = rs.getString("director");
 			String movieRating = rs.getString("rating");
+			if(rs.wasNull())
+				movieRating = "N/A";
 			String movieNumVotes = rs.getString("numVotes");
+			if(rs.wasNull())
+				movieNumVotes = "N/A";
 			String movieGenres = rs.getString("genres");
+			if(rs.wasNull())
+				movieGenres = "N/A";
 			String movieStars = rs.getString("stars");
+			if(rs.wasNull())
+				movieStars = "N/A";
 			
 			JsonArray jsonArrayGenres = new JsonArray();
-			for(String genre: movieGenres.split(", "))
+			if(movieGenres.equals("N/A"))
 			{
 				JsonObject jsonGenre = new JsonObject();
-				jsonGenre.addProperty("genre_name", genre);
+				jsonGenre.addProperty("genre_name", "N/A");
 				jsonArrayGenres.add(jsonGenre);
 			}
-			JsonArray jsonArrayStars = new JsonArray();
-			for(String idNameStr: movieStars.split(", "))
+			else
 			{
-				String[] idNameArr = idNameStr.split(":");
+				for(String genre: movieGenres.split(", "))
+				{
+					JsonObject jsonGenre = new JsonObject();
+					jsonGenre.addProperty("genre_name", genre);
+					jsonArrayGenres.add(jsonGenre);
+				}
+			}
+			
+			JsonArray jsonArrayStars = new JsonArray();
+			if(movieStars.equals("N/A"))
+			{
 				JsonObject jsonStar = new JsonObject();
-				jsonStar.addProperty("star_id", idNameArr[0]);
-				jsonStar.addProperty("star_name", idNameArr[1]);
+				jsonStar.addProperty("star_id", "N/A");
+				jsonStar.addProperty("star_name", "N/A");
 				jsonArrayStars.add(jsonStar);
+			}
+			else
+			{
+				for(String idNameStr: movieStars.split(", "))
+				{
+					String[] idNameArr = idNameStr.split(":");
+					JsonObject jsonStar = new JsonObject();
+					jsonStar.addProperty("star_id", idNameArr[0]);
+					jsonStar.addProperty("star_name", idNameArr[1]);
+					jsonArrayStars.add(jsonStar);
+				}
 			}
 			
 			// Create a JsonObject based on the data we retrieve from rs
-
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty("movie_id", movieId);
 			jsonObject.addProperty("movie_title", movieTitle);

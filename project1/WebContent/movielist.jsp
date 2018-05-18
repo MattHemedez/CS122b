@@ -19,16 +19,14 @@
 	</head>
 	<body>
 		<%
-	    	ArrayList<String> movieList = (ArrayList<String>) request.getAttribute("movies");
+			ArrayList<String> movieIDs = (ArrayList<String>) request.getAttribute("movieIDs");
+			HashMap<String,String> movieTitles = (HashMap<String,String>) request.getAttribute("movies");
 	    	HashMap<String, HashSet<String>> actors = (HashMap<String, HashSet<String>>) request.getAttribute("actors");
 	    	HashMap<String, HashSet<String>> genres = (HashMap<String, HashSet<String>>) request.getAttribute("genres");
-	    	HashMap<String,String> movieID = (HashMap<String,String>) request.getAttribute("movieID");
 	    	
 	    	HashMap<String,String> movieRating = (HashMap<String,String>) request.getAttribute("movieRating");
 	    	HashMap<String,String> movieDirector = (HashMap<String,String>) request.getAttribute("movieDirector");
-	    	HashMap<String,String> movieYear = (HashMap<String,String>) request.getAttribute("movieYear");
-
-
+	    	HashMap<String,String> movieYear = (HashMap<String,String>) request.getAttribute("movieYear");	    	
 	    	String query = (String) request.getAttribute("query");
 			int totalResults = (int) request.getAttribute("totalResults");
 	    	int pageNum = Integer.parseInt((String)request.getAttribute("pageNum"));
@@ -187,21 +185,21 @@
      	    	
 			
 			<%
-		    for(int i= 0; i<movieList.size(); ++i){
+		    for(int i= 0; i<movieIDs.size(); ++i){
 		    %>	
 		    			
 		    <% 
 			    if(i%2 == 0 && i != 0){
 		    		out.print("</div><div class='row row-equal-height'>");
 		    	}
-		    	String imdbID =movieID.get(movieList.get(i));
+		    	String imdbID = movieIDs.get(i);
 				String movieURL =  baseUrl + "movie.html?id=" + imdbID;
-		    	out.print("<h4><a href='"+ movieURL+"'>" + movieList.get(i) + "</a> ("+movieYear.get(movieList.get(i))+ ")</h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
+		    	out.print("<h4><a href='"+ movieURL+"'>" + movieTitles.get(movieIDs.get(i)) + "</a> ("+movieYear.get(movieIDs.get(i))+ ")</h4>");  // <!-- DISPLAYS THE MOVIE NAME -->
 				String movieGenres = "| ";
-				for(String g: genres.get(movieList.get(i))){	
+				for(String g: genres.get(movieIDs.get(i))){	
 					movieGenres+=g+" | ";
 				}
-				out.print("<p style=\"font-size:10px\"><span>" + movieGenres+"</span><span id='ratings'>&#9733 "+movieRating.get(movieList.get(i)) + "</span></p>"); //<!-- DISPLAYS THE GENRES/RATINGS --> 
+				out.print("<p style=\"font-size:10px\"><span>" + movieGenres+"</span><span id='ratings'>&#9733 "+movieRating.get(movieIDs.get(i)) + "</span></p>"); //<!-- DISPLAYS THE GENRES/RATINGS --> 
 				
 				String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...";
 				// Trying API Calls to OMDB CALL BY IMDB ID
@@ -216,9 +214,18 @@
 		    	InputStream apiResponse = connection.getInputStream();
 		    	JsonParser jsonParser = new JsonParser();
 		    	JsonObject jsonObject = (JsonObject)jsonParser.parse(new InputStreamReader(apiResponse, "UTF-8"));
-		    	String movieUrl =  jsonObject.get("Poster").getAsString();
-		    	String plot = jsonObject.get("Plot").getAsString();
 		    	
+		    	String movieUrl = "";
+		    	if(jsonObject.get("Poster") != null)
+		    		movieUrl =  jsonObject.get("Poster").getAsString();
+		    	else 
+		    		movieUrl = "N/A";
+		    	
+		    	String plot = "";
+		    	if(jsonObject.get("Plot") != null)
+		    		plot = jsonObject.get("Plot").getAsString();
+		    	else
+		    		plot = "N/A";
 		    	
 		    	
 			%>  
@@ -236,13 +243,13 @@
                       					
 										<form id="addItem" method="GET"  action="api/cart"> <!--  WHEN FINISHED ADD THIS TO MAKE SO IT DOESNT DISPLAY NEW PAGE onsubmit="return false" -->
 											
-											<input type="hidden" name="movieName" value="<%=movieList.get(i) %>"/>
+											<input type="hidden" name="movieName" value="<%=movieTitles.get(movieIDs.get(i)) %>"/>
 											<input type="hidden" name="movieId" value="<%=imdbID%>"/>
 											<input type="hidden" name="moviePoster" value="<%=movieUrl%>"/>
 											<input type="hidden" name="increment" value="1"/>
 											
 	                      					<input type="submit" class="btn btn-sm btn-outline-secondary" value="Add to Cart" 
-	                      					onclick="return confirm('Are you sure you would like to add <%=movieList.get(i)%> to cart?');"></input>  
+	                      					onclick="return confirm('Are you sure you would like to add <%=movieTitles.get(movieIDs.get(i))%> to cart?');"></input>  
 										</form> 
 										
                     				</div>
@@ -258,14 +265,19 @@
 	    				<div class="card-body">
 	        			<% 
 	        			out.print("<h3 style='color:red'>FEATURING</h3>");
-						for(String unparsed: actors.get(movieList.get(i))){
-			    			StringTokenizer actorsST = new StringTokenizer(unparsed,":"); // starID:Name
-		        			out.print("<p class='card-text'> <a href='"+ baseUrl+"star.html?id=" + actorsST.nextToken()+"'>" + actorsST.nextToken() + "</a></p>");   //<!-- DISPLAYS THE ACTORS HERE --> 
-						}
+	        			try
+	        			{
+							for(String unparsed: actors.get(movieIDs.get(i))){
+				    			StringTokenizer actorsST = new StringTokenizer(unparsed,":"); // starID:Name
+			        			out.print("<p class='card-text'> <a href='"+ baseUrl+"star.html?id=" + actorsST.nextToken()+"'>" + actorsST.nextToken() + "</a></p>");   //<!-- DISPLAYS THE ACTORS HERE --> 
+							}
+	        			}
+	        			catch(Exception e)
+	        			{
+	        				out.print("<p class='card-text'>" + "No Stars found" + "</p>");   //<!-- DISPLAYS THE ACTORS HERE -->
+	        			}
 	        			out.print("<h3 style='color:red'>DIRECTED BY</h3>");
-	        			out.print("<p>"+ movieDirector.get(movieList.get(i))+"</p>");
-
-
+	        			out.print("<p>"+ movieDirector.get(movieIDs.get(i))+"</p>");
 
 	        			%> <!-- DISPLAYS THE ACTORS AND GENRES NAME -->
 	        			</div>
