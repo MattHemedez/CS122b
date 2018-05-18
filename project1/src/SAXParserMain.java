@@ -184,7 +184,6 @@ public class SAXParserMain extends DefaultHandler {
     	if(maxId.next())
     		maxGenreID = maxId.getInt("MAX(id)");
     	
-    	System.out.println("THIS IS THE CURRENT MAX ID: " + maxGenreID);
     	stmt.close();
     }
 
@@ -229,6 +228,7 @@ public class SAXParserMain extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("t")) {
             tempMovie.setTitle(tempVal);
         } else if (qName.equalsIgnoreCase("year")) {
+        	tempVal= tempVal.trim();
             tempVal= tempVal.replaceAll("[^1-9 ]", "0");
             tempMovie.setYear(Integer.parseInt(tempVal));
         } else if(qName.equalsIgnoreCase("dirn")){
