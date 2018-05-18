@@ -20,7 +20,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class SAXParser extends DefaultHandler {
+public class SAXParserMain extends DefaultHandler {
 	private HashMap<String, Integer> knownGenres = new HashMap<String, Integer>() {{
 	    put("Action",1);
 	    put("Adult",2);
@@ -60,14 +60,13 @@ public class SAXParser extends DefaultHandler {
 	
 	private int maxGenreID;
 
-    public SAXParser() {
+    public SAXParserMain() {
         myMovies = new ArrayList<Movies>();
         movieGenres = new ArrayList<String>();
         initializeDS();
     }
     
     public void initializeDS() {
-    	System.out.println("HELLO WORKING NOW");
     	dataSource = new MysqlDataSource();
     	// Creating the properties 
     	dataSource.setServerName("localhost");
@@ -141,7 +140,7 @@ public class SAXParser extends DefaultHandler {
                 		genres_in_movies.println(knownGenres.get(e.getKey()) + "," + currMovie.getId()); // Grabs the genreID->movieID pair
                 	}
                 	
-                	movies.println( currMovie.getId() + "," + currMovie.getTitle()+ "," +currMovie.getYear()+ "," +currMovie.getDirector());
+                	movies.println( currMovie.getId() + "," + currMovie.getTitle().replaceAll(",", "")+ "," +currMovie.getYear()+ "," +currMovie.getDirector());
                 }
             }
             
@@ -191,7 +190,8 @@ public class SAXParser extends DefaultHandler {
 
     // Checks if we need to add new genre to database or its already there
     public HashMap<String,Integer> existingGenre(String currentGenre){
-        String fixedGenre = currentGenre.substring(0,1).toUpperCase() + currentGenre.substring(1); // Normalizing the genre capitalization  
+        String fixedGenre = currentGenre.substring(0,1).toUpperCase() + currentGenre.substring(1).toLowerCase(); // Normalizing the genre capitalization
+        fixedGenre = fixedGenre.trim();
         HashMap<String,Integer> tempMap = new HashMap<String,Integer>();
         for(Map.Entry<String, Integer> e: knownGenres.entrySet()){
             if(e.getKey().substring(0,3).equals(fixedGenre.substring(0,3))) {
@@ -229,17 +229,19 @@ public class SAXParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("t")) {
             tempMovie.setTitle(tempVal);
         } else if (qName.equalsIgnoreCase("year")) {
-            tempVal= tempVal.replaceAll("[^1-9]", "0");
+            tempVal= tempVal.replaceAll("[^1-9 ]", "0");
             tempMovie.setYear(Integer.parseInt(tempVal));
         } else if(qName.equalsIgnoreCase("dirn")){
             tempMovie.setDirector(tempVal);
         } else if(qName.equalsIgnoreCase("cat") && tempVal.length() >=3){
-        	HashMap<String,Integer> validGenre = existingGenre(tempVal);
+            String fixedGenre = tempVal.substring(0,1).toUpperCase() + tempVal.substring(1).toLowerCase(); // Normalizing the genre capitalization  
+            fixedGenre= fixedGenre.trim();
+        	HashMap<String,Integer> validGenre = existingGenre(fixedGenre);
         	
         	
         	if(validGenre.size() <= 0) { // New genre cache the genre and add to database
-        		knownGenres.put(tempVal, ++maxGenreID); 
-        		tempMovie.setGenres(tempVal, maxGenreID);
+        		knownGenres.put(fixedGenre, ++maxGenreID); 
+        		tempMovie.setGenres(fixedGenre, maxGenreID);
         	}else {
          		Map.Entry<String,Integer> entry = validGenre.entrySet().iterator().next(); // Do not have Pairs in java 7, so had to use HashMap
         		tempMovie.setGenres(entry.getKey(), entry.getValue()); // Existing genre in our database, use full genre name
@@ -253,7 +255,7 @@ public class SAXParser extends DefaultHandler {
 
 
     public static void main(String[] args)throws FileNotFoundException{
-    	SAXParser spe = new SAXParser();
+    	SAXParserMain spe = new SAXParserMain();
 
     	
     	
@@ -262,7 +264,6 @@ public class SAXParser extends DefaultHandler {
         ResultSet rs = null;
     	try {
 	      conn = dataSource.getConnection();
-//	      stmt = conn.prepareStatement("");
 	      spe.maxId(conn);
 	      
 	      
