@@ -20,14 +20,14 @@ public class LoginFilter implements Filter {
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
         
         // Check if this URL is allowed to access without logging in
-        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI()) && httpRequest.getSession().getAttribute("employee") == null ) {
+        if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI()) && httpRequest.getSession().getAttribute("employee") == null) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
         }
         
         // Check if user is an employee
-        if (httpRequest.getSession().getAttribute("employee") == null && this.isUrlAllowedWithoutEmployeeLogin(httpRequest.getRequestURI())) {
+        if (httpRequest.getSession().getAttribute("employee") == null && httpRequest.getSession().getAttribute("user") != null && this.isUrlAllowedWithoutEmployeeLogin(httpRequest.getRequestURI())) {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
             return;
