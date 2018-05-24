@@ -33,8 +33,8 @@ public class MovieSuggestion extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String loginUser = "mytestuser";
-		String loginPasswd = "mypassword";
+		String loginUser = "root";
+		String loginPasswd = "asd123";
 		String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 
 		JsonArray jsonArray = new JsonArray(); // send back out to the js
@@ -44,11 +44,20 @@ public class MovieSuggestion extends HttpServlet {
 			// Establish the connection 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-			String movieQuery= request.getParameter("query");
-
-			String query = "SELECT m.title, m.id FROM movies AS m WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE);";
+			String movieQuery= request.getParameter("query").trim();
+			String splitQuery[] = movieQuery.split(" ");
+					
+					
+			String query = "SELECT m.title, m.id FROM movies AS m WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 10;";
 			PreparedStatement statement = connection.prepareStatement(query);
-			statement.setString(1, movieQuery);
+
+			
+			String newString = "";
+			for(int i=0; i<splitQuery.length; ++i) {
+				newString += splitQuery[i] + "* ";
+			}
+			statement.setString(1, newString);
+			
 			
 			ResultSet rs = statement.executeQuery();
 			while(rs.next()) {
