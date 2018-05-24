@@ -68,17 +68,14 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 
 
 /*
- * This function is the select suggestion handler function. 
- * When a suggestion is selected, this function is called by the library.
- * 
- * You can redirect to the page you want using the suggestion data.
+ * Redirects user to the webpage
  */
 function handleSelectSuggestion(suggestion) {
 	// TODO: jump to the specific result page based on the selected suggestion
 	
 	console.log("you select " + suggestion["value"])
-	var url = suggestion["data"]["category"] + "-hero" + "?id=" + suggestion["data"]["heroID"]
-	console.log(url)
+	var url = "movie.html?id=" + suggestion["data"];
+	window.location.replace(url);
 }
 
 
