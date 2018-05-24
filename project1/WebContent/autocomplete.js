@@ -1,13 +1,6 @@
 // Initial Variables
 var localDict = {};
 
-var result = {
-        suggestions: [
-            { "value": "United Arab Emirates", "data": "AE" },
-            { "value": "United Kingdom",       "data": "UK" },
-            { "value": "United States",        "data": "US" }
-        ]
-    };
 /*
  * This function is called by the library when it needs to lookup a query.
  * 
@@ -65,7 +58,7 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 	console.log(jsonData)
 	
 	// result into a global variable
-	localDict[escape(query)] = data;
+	localDict[escape(query)] = jsonData;
 	
 	// call the callback function provided by the autocomplete library
 	// add "{suggestions: jsonData}" to satisfy the library response format according to
@@ -100,7 +93,7 @@ $('#autocomplete').autocomplete(
     		handleSelectSuggestion(suggestion)
     },
     // set the groupby name in the response json data field
-    groupBy: "title",
+    //groupBy: "title",
     // set delay time
     deferRequestBy: 300,
     // prevents queries starting with problematic first words to stop generating queries

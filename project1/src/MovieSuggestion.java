@@ -69,10 +69,6 @@ public class MovieSuggestion extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-
 	
 }
