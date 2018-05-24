@@ -66,14 +66,18 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 	doneCallback( { suggestions: jsonData } );
 }
 
+function handleSuggestionFormatting(suggestion, currentValue) {
+	response = '<button type="button" class="list-group-item">'
+		+ suggestion.value
+		+'</button>';
+	console.log(suggestion);
+	return response;
+}
 
 /*
  * Redirects user to the webpage
  */
-function handleSelectSuggestion(suggestion) {
-	// TODO: jump to the specific result page based on the selected suggestion
-	
-	console.log("you select " + suggestion["value"])
+function handleSelectSuggestion(suggestion) {	
 	var url = "movie.html?id=" + suggestion["data"];
 	window.location.replace(url);
 }
@@ -87,7 +91,7 @@ $('#autocomplete').autocomplete(
 		handleLookup(query, doneCallback)
     },
     onSelect: function(suggestion) {
-    		handleSelectSuggestion(suggestion)
+    	handleSelectSuggestion(suggestion)
     },
     // set the groupby name in the response json data field
     //groupBy: "title",
@@ -99,7 +103,10 @@ $('#autocomplete').autocomplete(
     minChars: 3,
     // set maximum number of results listed from local lookup
     lookupLimit: 10,
-    // TODO: add other parameters, such as minimum characters
+    // format each suggestion into a nice bootstrap element
+    formatResult: function(suggestion, currentValue) {
+    	return handleSuggestionFormatting(suggestion, currentValue);
+    }
 });
 
 
