@@ -113,23 +113,4 @@ $('#autocomplete').autocomplete(
 });
 
 
-/*
- * do normal full text search if no suggestion is selected 
- */
-function handleNormalSearch(query) {
-	console.log("doing normal search with query: " + query);
-	// TODO: you should do normal search here
-}
-
-// bind pressing enter key to a handler function
-$('#autocomplete').keypress(function(event) {
-	// keyCode 13 is the enter key
-	if (event.keyCode == 13) {
-		// pass the value of the input box to the handler function
-		handleNormalSearch($('#autocomplete').val())
-	}
-})
-
-// TODO: if you have a "search" button, you may want to bind the onClick event as well of that button
-
 
