@@ -33,8 +33,8 @@ public class MovieSuggestion extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String loginUser = "root";
-		String loginPasswd = "asd123";
+		String loginUser = "mytestuser";
+		String loginPasswd = "mypassword";
 		String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
 
 		JsonArray jsonArray = new JsonArray(); // send back out to the js
@@ -54,7 +54,7 @@ public class MovieSuggestion extends HttpServlet {
 			
 			String newString = "";
 			for(int i=0; i<splitQuery.length; ++i) {
-				newString += splitQuery[i] + "* ";
+				newString += "+" + splitQuery[i] + "* ";
 			}
 			statement.setString(1, newString);
 			
