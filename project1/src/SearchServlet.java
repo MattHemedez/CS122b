@@ -85,13 +85,13 @@ public class SearchServlet extends HttpServlet {
 	    		String query ="SELECT COUNT(DISTINCT m.id) AS total "
 	    				+ "FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating "
 	    				+ "FROM movies AS m LEFT JOIN ratings AS r ON m.id = r.movieId LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id " 
-	    				+ "WHERE m.title LIKE ? AND m.year LIKE ? AND m.director LIKE ? AND IFNULL(g.name, '') LIKE ? AND IFNULL(s.name, '') LIKE ? ) AS m;";
+	    				+ "WHERE (MATCH (title) AGAINST (? IN BOOLEAN MODE)) AND m.year LIKE ? AND m.director LIKE ? AND IFNULL(g.name, '') LIKE ? AND IFNULL(s.name, '') LIKE ? ) AS m;";
 	    				
 	    				
 	    		String query2 ="SELECT m.id, m.title, m.director, m.year, m.numVotes, m.rating, GROUP_CONCAT(DISTINCT s.id,':', s.name SEPARATOR ',') AS stars, GROUP_CONCAT(DISTINCT g.name SEPARATOR ',') AS genres "
 	    				+ "FROM (SELECT DISTINCT m.id, m.title, m.director, m.year, r.numVotes, r.rating "
 	    				+ "FROM movies AS m LEFT JOIN ratings AS r ON m.id = r.movieId LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
-	    				+ "WHERE m.title LIKE ? AND m.year LIKE ? AND m.director LIKE ? AND IFNULL(g.name, '') LIKE ? AND IFNULL(s.name, '')LIKE ? "
+	    				+ "WHERE (MATCH (title) AGAINST (? IN BOOLEAN MODE)) AND m.year LIKE ? AND m.director LIKE ? AND IFNULL(g.name, '') LIKE ? AND IFNULL(s.name, '')LIKE ? "
 	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
 	    				+ "GROUP BY m.id ORDER BY m."+orderBy + " "+order + ";";
 	    		
@@ -101,18 +101,22 @@ public class SearchServlet extends HttpServlet {
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
 //	    			query += "m.title LIKE '%" + title + "%' AND ";
-	    			statement.setString(1, "%" +title +"%");
-	    			statement2.setString(1, "%" +title +"%");
+	    			statement.setString(1, title + "*");
+	    			statement2.setString(1, title + "*");
 
 	    			
 	    		}else if(ftitle != null && !ftitle.equals("")) {
 //	    			query += "m.title LIKE '" + ftitle + "%' AND ";
-	    			statement.setString(1, ftitle+"%");
-	    			statement2.setString(1, ftitle+"%");
+	    			query = query.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
+	    			query2 = query2.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
+	    			statement = connection.prepareStatement(query);
+	    			statement2 = connection.prepareStatement(query2);
+	    			statement.setString(1, ftitle + "%");
+	    			statement2.setString(1, ftitle + "%");
 
 	    		}else {
-	    			statement.setString(1, "%%");
-	    			statement2.setString(1, "%%");
+	    			statement.setString(1, "*a*");
+	    			statement2.setString(1, "*a*");
 	    		}
 	    		statement.setString(2, (year == null || year.equals("")? "%%": year)); // Year 
 	    		statement2.setString(2, (year == null || year.equals("")? "%%": year)); // Year 
