@@ -70,7 +70,6 @@ function handleSuggestionFormatting(suggestion, currentValue) {
 	response = '<button type="button" class="list-group-item">'
 		+ suggestion.value
 		+'</button>';
-	console.log(suggestion);
 	return response;
 }
 

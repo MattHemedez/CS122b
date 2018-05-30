@@ -13,7 +13,11 @@ body
 	top: 30%; left: 46%; 
 	position: absolute;
 	color:white;
-	font-family:Verdana
+	font-family:Verdana;
+}
+
+.autocomplete-selected > .list-group-item{
+	background-color: #e6e6e6;	
 }
 
 .input-group.input-group-unstyled input.form-control{
