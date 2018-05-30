@@ -44,6 +44,7 @@ public class SingleMovieServlet extends HttpServlet {
 			// Get a connection from dataSource
 			//Connection dbcon = dataSource.getConnection();
 			// create database connection
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
     		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
 			// Construct a query with parameter represented by "?"
@@ -61,9 +62,31 @@ public class SingleMovieServlet extends HttpServlet {
 			// Perform the query
 			ResultSet rs = statement.executeQuery();
 
+			String url =request.getScheme() + "://" +   // "http" + "://
+   	             request.getServerName() +       // "myhost"
+   	             ":" +                           // ":"
+   	             request.getServerPort() +       // "8080"
+   	             request.getRequestURI() +       // "/people"
+   	             "?" +                           // "?"
+   	             request.getQueryString();
+   		
+   		
+			String baseUrl =request.getScheme() + "://" +   // "http" + "://
+   	             request.getServerName() +       // "myhost"
+   	             ":" +                           // ":"
+   	             request.getServerPort()+        // "8080"
+   	             request.getRequestURI();        // "/people"
+			
+			String websiteUrl =request.getScheme() + "://" +   // "http" + "://
+		             request.getServerName() +       // "myhost"
+		             ":" +                           // ":"
+		             request.getServerPort()+        // "8080"
+		             request.getRequestURI();        // "/people"
+			websiteUrl = websiteUrl.replace("/api/single-movie", "");
+			
 			// Iterate through each row of rs
 			rs.next();
-
+			
 			String movieId = rs.getString("id");
 			String movieTitle = rs.getString("title");
 			String movieYear = rs.getString("year");
@@ -120,12 +143,19 @@ public class SingleMovieServlet extends HttpServlet {
 			
 			// Create a JsonObject based on the data we retrieve from rs
 			JsonObject jsonObject = new JsonObject();
+			//String url = "test";
+			//String baseUrl = "test";
+			jsonObject.addProperty("url", url);
+			jsonObject.addProperty("baseUrl", baseUrl);
+			jsonObject.addProperty("websiteUrl", websiteUrl);
 			jsonObject.addProperty("movie_id", movieId);
 			jsonObject.addProperty("movie_title", movieTitle);
 			jsonObject.addProperty("movie_year", movieYear);
 			jsonObject.addProperty("movie_director", movieDirector);
 			jsonObject.addProperty("movie_rating", movieRating);
 			jsonObject.addProperty("movie_num_votes", movieNumVotes);
+			jsonObject.addProperty("status", "Success");                
+            jsonObject.addProperty("message", "Correctly retrieved information.");
 			jsonObject.add("movie_genres", jsonArrayGenres);
 			jsonObject.add("movie_stars", jsonArrayStars);
 			
@@ -140,11 +170,11 @@ public class SingleMovieServlet extends HttpServlet {
 		} catch (Exception e) {
 			// write error message JSON object to output
 			JsonObject jsonObject = new JsonObject();
-			jsonObject.addProperty("errorMessage", e.getMessage());
+			jsonObject.addProperty("status", "Error");                
+            jsonObject.addProperty("message", e.toString());
 			out.write(jsonObject.toString());
 
-			// set reponse status to 500 (Internal Server Error)
-			response.setStatus(500);
+			response.setStatus(200);
 		}
 		out.close();
 

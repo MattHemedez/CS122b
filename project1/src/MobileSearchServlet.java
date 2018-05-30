@@ -130,6 +130,13 @@ public class MobileSearchServlet extends HttpServlet {
 	    	             request.getServerPort()+        // "8080"
 	    	             request.getRequestURI();        // "/people"
 	    		
+	    		String websiteUrl =request.getScheme() + "://" +   // "http" + "://
+			             request.getServerName() +       // "myhost"
+			             ":" +                           // ":"
+			             request.getServerPort()+        // "8080"
+			             request.getRequestURI();        // "/people"
+				websiteUrl = websiteUrl.replace("/MobileServlet", "");
+	    		
 	    		baseUrl = baseUrl.substring(0,baseUrl.length()-13);
 	    		
 	    		ArrayList<String> movieIDs = new ArrayList<String>();
@@ -233,6 +240,7 @@ public class MobileSearchServlet extends HttpServlet {
 	                
 	    			responseJsonObject.addProperty("url", url);
 	    			responseJsonObject.addProperty("baseUrl", baseUrl);
+	    			responseJsonObject.addProperty("websiteUrl", websiteUrl);
 	                responseJsonObject.addProperty("query", getMoviesQuery);
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
@@ -246,11 +254,12 @@ public class MobileSearchServlet extends HttpServlet {
 	            	// no movies in the search
 	            	responseJsonObject.addProperty("url", url);
 	    			responseJsonObject.addProperty("baseUrl", baseUrl);
+	    			responseJsonObject.addProperty("websiteUrl", websiteUrl);
 	                responseJsonObject.addProperty("query", getMoviesQuery);
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
 	                responseJsonObject.addProperty("totalResults", totalResults);
-	                responseJsonObject.addProperty("status", "fail");                
+	                responseJsonObject.addProperty("status", "Error");                
 	                responseJsonObject.addProperty("message", "Sorry, the movies that that you searched for are not in our databases.");
 	            	response.getWriter().write(responseJsonObject.toString());
 	            }
@@ -258,11 +267,12 @@ public class MobileSearchServlet extends HttpServlet {
 	            {
 	            	responseJsonObject.addProperty("url", url);
 	    			responseJsonObject.addProperty("baseUrl", baseUrl);
+	    			responseJsonObject.addProperty("websiteUrl", websiteUrl);
 	                responseJsonObject.addProperty("query", getMoviesQuery);
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
 	                responseJsonObject.addProperty("totalResults", totalResults);
-	            	responseJsonObject.addProperty("status", "fail");                
+	            	responseJsonObject.addProperty("status", "Error");                
 	                responseJsonObject.addProperty("message", "Sorry for the inconvenience, but our servers are experiencing difficulties. Please try again later.");
 	            	response.getWriter().write(responseJsonObject.toString());
 	            }
@@ -274,7 +284,7 @@ public class MobileSearchServlet extends HttpServlet {
 	        catch (Exception e) 
 	        {
 	        	JsonObject responseJsonObject = new JsonObject();
-	        	responseJsonObject.addProperty("status", "fail");                
+	        	responseJsonObject.addProperty("status", "Error");                
                 responseJsonObject.addProperty("message", e.toString());
             	response.getWriter().write(responseJsonObject.toString());
 	    		e.printStackTrace();
