@@ -79,7 +79,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,9 +190,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onResponse(String response) {
                         Log.d("response", response);
                         if(response.contains("success")){ // if username exist change the page
-//                            Intent goToIntent = new Intent(this, BlueActivity.class);
-//                            startActivity(goToIntent);    DO THIS AFTER MAKING INDEX
-                            ((TextView) findViewById(R.id.http_response)).setText(response);
+                            Intent goToIntent = new Intent(LoginActivity.this, IndexActivity.class);
+                            startActivity(goToIntent);
+//                            ((TextView) findViewById(R.id.http_response)).setText(response);
                         }else{
                             String responseParsed = response.replaceAll("[{}\"]","");
 
