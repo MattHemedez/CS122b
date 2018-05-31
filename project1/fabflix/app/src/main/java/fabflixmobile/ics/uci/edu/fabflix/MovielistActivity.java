@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,20 +37,25 @@ public class MovielistActivity extends AppCompatActivity{
         String passedArg = getIntent().getExtras().getString("json");
 
         listView = (ListView) findViewById(R.id.list);
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
 
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
-        final MovieArrayAdapter adapter = new MovieArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
+        final ArrayList<Movie> movie = new ArrayList<>();
+        movie.add(new Movie("Peter Anteater", 1965));
+        movie.add(new Movie("John Doe", 1975));
 
+
+        final MovieArrayAdapter adapter = new MovieArrayAdapter(this, movie);
+        ListView listView = (ListView)findViewById(R.id.list);
         listView.setAdapter(adapter);
+
+        
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Movie m = movie.get(position);
+                String message = String.format("Clicked on position: %d, name: %s, %d", position, m.getTitle(), m.getYear());
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
     }
