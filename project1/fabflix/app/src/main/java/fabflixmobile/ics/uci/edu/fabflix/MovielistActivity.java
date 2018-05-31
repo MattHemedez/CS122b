@@ -21,6 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.*;
 
 
@@ -36,7 +39,26 @@ public class MovielistActivity extends AppCompatActivity{
 
         String passedArg = getIntent().getExtras().getString("json");
 
-        listView = (ListView) findViewById(R.id.list);
+        try{
+            JSONObject jsonObj = new JSONObject(passedArg.toString());
+            Iterator keys = jsonObj.keys();
+
+            while (keys.hasNext()) {
+                Object key = keys.next();
+                JSONObject value = jsonObj.getJSONObject((String) key);
+                String component = value.getString("component");
+                System.out.println(component);
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+
+
+
+
+
+            listView = (ListView) findViewById(R.id.list);
 
         final ArrayList<Movie> movie = new ArrayList<>();
         movie.add(new Movie("Peter Anteater", 1965));
@@ -47,7 +69,7 @@ public class MovielistActivity extends AppCompatActivity{
         ListView listView = (ListView)findViewById(R.id.list);
         listView.setAdapter(adapter);
 
-        
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
