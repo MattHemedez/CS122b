@@ -72,22 +72,22 @@ public class IndexActivity extends AppCompatActivity{
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         Toast.makeText(this, "Search has begun with"+" Movie Title: " + movieTitle, Toast.LENGTH_LONG).show();
 
-        final StringRequest loginRequest = new StringRequest(Request.Method.POST, "https://18.188.218.0:8443/project1/api/mobile-login",
+        final StringRequest loginRequest = new StringRequest(Request.Method.GET, "https://18.188.218.0:8443/project1/MobileServlet?title=" + movieTitle,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("response", response);
 
-                        if(response.contains("success")){ // if username exist change the page
-                            Intent goToIntent = new Intent(IndexActivity.this, /*ADD INTENT TO SWITCH TO*/IndexActivity.class);
+                        if(response.contains("Success")){ // if username exist change the page
+                            Intent goToIntent = new Intent(IndexActivity.this, MovielistActivity.class);
+                            goToIntent.putExtra("json", response);
                             startActivity(goToIntent);
-//                            ((TextView) findViewById(R.id.http_response)).setText(response);
+//                            ((TextView) findViewById(R.id.response_back)).setText("HELLO");
                         }else{
-                            String responseParsed = response.replaceAll("[{}\"]","");
-
-                            int messageIndex = responseParsed.indexOf("message");
-                            ((TextView) findViewById(R.id.http_response)).setText(responseParsed.substring(messageIndex+8,responseParsed.length()));
+                            ((TextView) findViewById(R.id.response_back)).setText("Sorry, the movies that that you searched for are not in our databases.");
                         }
+
+
 
                     }
                 },
@@ -98,12 +98,7 @@ public class IndexActivity extends AppCompatActivity{
                         Log.d("security.error", error.toString());
                     }
                 }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                return params;
-            }  // HTTP POST Form Data
-        };
+        );
         queue.add(loginRequest);
     }
 }

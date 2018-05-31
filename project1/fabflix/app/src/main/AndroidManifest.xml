@@ -27,6 +27,12 @@
         <activity
             android:name=".IndexActivity"
             android:label="The Index Page" />
+
+        <activity
+            android:name=".MovielistActivity"
+            android:label="The Movielist Page" />
+
+
     </application>
 
 </manifest>
