@@ -2,26 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="150px"
+    android:layout_height="wrap_content"
     android:background="@android:color/holo_blue_light">
 
     <TextView
         android:id="@+id/title"
-        android:padding="10px"
-        android:textSize="40px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
         android:text="Peter Anteater"
         android:textColor="@android:color/white"
-        />
+        android:textSize="40px" />
+
+    <TextView
+        android:id="@+id/director"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:text="Tommy Wisseu"
+        android:textColor="@android:color/white"
+        android:textSize="30px" />
 
     <TextView
         android:id="@+id/subtitle"
-        android:padding="10px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
         android:text="1965"
         android:textColor="@android:color/white"
-        />
+        android:textSize="30px" />
+
+    <TextView
+        android:id="@+id/genres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:text="Genres: "
+        android:textColor="@android:color/white"
+        android:textSize="30px" />
+
+    <TextView
+        android:id="@+id/stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:text="Stars: "
+        android:textColor="@android:color/white"
+        android:textSize="30px" />
 
 </LinearLayout>

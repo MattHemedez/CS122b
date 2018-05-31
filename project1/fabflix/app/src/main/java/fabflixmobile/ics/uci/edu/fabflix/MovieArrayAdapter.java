@@ -30,9 +30,15 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie> {
 
         TextView titleView = (TextView)view.findViewById(R.id.title);
         TextView subtitleView = (TextView)view.findViewById(R.id.subtitle);
+        TextView directorView = (TextView)view.findViewById(R.id.director);
+        TextView genresView = (TextView)view.findViewById(R.id.genres);
+        TextView starsView = (TextView)view.findViewById(R.id.stars);
 
         titleView.setText(movie.getTitle());
         subtitleView.setText(movie.getYear().toString());
+        directorView.setText(movie.getDirector());
+        genresView.setText(movie.getGenres());
+        starsView.setText(movie.getStars());
 
         return view;
     }
