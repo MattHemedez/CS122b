@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,30 +40,47 @@ public class MovielistActivity extends AppCompatActivity{
 
         String passedArg = getIntent().getExtras().getString("json");
 
+        final ArrayList<Movie> movie = new ArrayList<>();
+
         try{
             JSONObject jsonObj = new JSONObject(passedArg.toString());
-            Iterator keys = jsonObj.keys();
+            String title = "";
+            int year = 0;
+            String director = "";
+            String genres = "";
+            String stars = "";
+            JSONArray movieList = jsonObj.getJSONArray("movies");
+            for(int i = 0; i < movieList.length(); ++i)
+            {
+                JSONObject jsonMovie = movieList.getJSONObject(i);
+                title = jsonMovie.getString("title");
+                year = jsonMovie.getInt("year");
+                director = jsonMovie.getString("director");
 
-            while (keys.hasNext()) {
-                Object key = keys.next();
-                JSONObject value = jsonObj.getJSONObject((String) key);
-                String component = value.getString("component");
-                System.out.println(component);
+                JSONArray genreList = jsonMovie.getJSONArray("genres");
+                for(int j = 0; j < genreList.length(); ++j)
+                {
+                    JSONObject jsonGenre = genreList.getJSONObject(j);
+                    genres += jsonGenre.getString("genreName") + ", ";
+                }
+                genres = genres.replaceAll(", +$", "");
+
+                JSONArray starList = jsonMovie.getJSONArray("stars");
+                for(int j = 0; j < starList.length(); ++j)
+                {
+                    JSONObject jsonStar = starList.getJSONObject(j);
+                    stars += jsonStar.getString("starName") + ", ";
+                }
+                stars = stars.replaceAll(", +$", "");
+
+                movie.add(new Movie(title, year, director, genres, stars));
             }
         }catch (JSONException e){
             e.printStackTrace();
         }
 
 
-
-
-
-
-            listView = (ListView) findViewById(R.id.list);
-
-        final ArrayList<Movie> movie = new ArrayList<>();
-        movie.add(new Movie("Peter Anteater", 1965));
-        movie.add(new Movie("John Doe", 1975));
+        listView = (ListView) findViewById(R.id.list);
 
 
         final MovieArrayAdapter adapter = new MovieArrayAdapter(this, movie);
