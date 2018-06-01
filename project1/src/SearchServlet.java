@@ -101,8 +101,20 @@ public class SearchServlet extends HttpServlet {
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
 //	    			query += "m.title LIKE '%" + title + "%' AND ";
-	    			statement.setString(1, "+" + title + "*");
-	    			statement2.setString(1, "+" + title + "*");
+	    			String[] titleSplit = title.split(" ");
+	    			String newTitle = "";
+	    			if(titleSplit.length > 1) {
+	    				
+	    				for(int i =0; i < titleSplit.length; ++i) {
+	    					newTitle+= "+" + titleSplit[i] + "* "; 
+	    				}
+	    				
+	    				statement.setString(1, newTitle);
+		    			statement2.setString(1, newTitle);
+	    			}else {
+		    			statement.setString(1, "+" + title + "*");
+		    			statement2.setString(1, "+" + title + "*");
+	    			}
 
 	    			
 	    		}else if(ftitle != null && !ftitle.equals("")) {
