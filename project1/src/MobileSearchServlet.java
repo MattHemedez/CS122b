@@ -61,8 +61,8 @@ public class MobileSearchServlet extends HttpServlet {
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
 //	    			query += "m.title LIKE '%" + title + "%' AND ";
-	    			countStatement.setString(1, title);
-	    			getMoviesStatement.setString(1, title);
+	    			countStatement.setString(1, "+" + title + "*");
+	    			getMoviesStatement.setString(1, "+" + title + "*");
 	    		}
 	    		else {
 	    			countStatement.setString(1, "");
