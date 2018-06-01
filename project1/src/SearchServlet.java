@@ -249,10 +249,12 @@ public class SearchServlet extends HttpServlet {
 	                dispatcher.forward(request, response);
 	            }else {
 	            	// no movies in the search
-	            	request.setAttribute("movies", "Error no movies found with search criteria");
+	            	response.sendRedirect("/project1/noResults.html");
 	            	
-	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
-	                dispatcher.forward(request, response);
+//	            	request.setAttribute("movies", "Error no movies found with search criteria");
+	            	
+//	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/movielist.jsp");
+//	                dispatcher.forward(request, response);
 	            }	    		
 	    		statement.close();
 	    		statement2.close();
