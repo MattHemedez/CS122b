@@ -47,23 +47,20 @@ public class LoginFilter implements Filter {
     // You might also want to allow some CSS files, etc..
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-        return true;
-        /*
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
         		|| requestURI.endsWith("login.css") || requestURI.endsWith("loginbg.png")
         		|| requestURI.endsWith("api/login") || requestURI.endsWith("api/logout")
         		|| requestURI.endsWith("recaptchaconstants.java") || requestURI.endsWith("recaptchaverifyutils")
-        		|| requestURI.endsWith("dashboard_login.jpg") || requestURI.endsWith("api/dashboard_login");
-       	*/
+        		|| requestURI.endsWith("dashboard_login.jpg") || requestURI.endsWith("api/dashboard_login")
+        		|| requestURI.endsWith("api/mobile-login");
+
     }
 
     
     private boolean isUrlAllowedWithoutEmployeeLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
-        return true;
-        /*return !requestURI.endsWith("_dashboard.html") && !requestURI.endsWith("_dashboard.css") 
+        return !requestURI.endsWith("_dashboard.html") && !requestURI.endsWith("_dashboard.css") 
         		&& !requestURI.endsWith("_dashboard.js") && !requestURI.endsWith("api/_dashboard");
-        */
     }
     /**
      * We need to have these function because this class implements Filter.

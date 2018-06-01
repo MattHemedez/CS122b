@@ -67,7 +67,6 @@ public class IndexActivity extends AppCompatActivity{
         String movieTitle = mSearchMovieView.getText().toString();
 
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
-        Toast.makeText(this, "Search has begun with"+" Movie Title: " + movieTitle, Toast.LENGTH_LONG).show();
 
         final StringRequest loginRequest = new StringRequest(Request.Method.GET, "https://18.188.218.0:8443/project1/MobileServlet?title=" + movieTitle,
                 new Response.Listener<String>() {

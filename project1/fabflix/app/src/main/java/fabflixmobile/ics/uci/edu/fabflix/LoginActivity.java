@@ -177,7 +177,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final Map<String, String> params = new HashMap<String, String>();
         params.put("username", email);
         params.put("password", password);
-        Toast.makeText(this, "Login button was clicked with"+" USERNAME: " + email + " PASSWORD: " + password, Toast.LENGTH_LONG).show();
 
         boolean cancel = false;
         View focusView = null;
