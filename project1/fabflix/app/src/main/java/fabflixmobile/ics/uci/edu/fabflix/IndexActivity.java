@@ -66,9 +66,6 @@ public class IndexActivity extends AppCompatActivity{
     {
         String movieTitle = mSearchMovieView.getText().toString();
 
-        final Map<String, String> params = new HashMap<String, String>();
-        params.put("title", movieTitle);
-
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         Toast.makeText(this, "Search has begun with"+" Movie Title: " + movieTitle, Toast.LENGTH_LONG).show();
 

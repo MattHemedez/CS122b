@@ -245,6 +245,7 @@ public class MobileSearchServlet extends HttpServlet {
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
 	                responseJsonObject.addProperty("totalResults", totalResults);
+	                responseJsonObject.addProperty("searchQuery", title);
 	                responseJsonObject.addProperty("status", "Success");
 	                responseJsonObject.addProperty("message", "Some movies were found");
 	                responseJsonObject.add("movies", jsonArrayMovies);
@@ -259,6 +260,7 @@ public class MobileSearchServlet extends HttpServlet {
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
 	                responseJsonObject.addProperty("totalResults", totalResults);
+	                responseJsonObject.addProperty("searchQuery", title);
 	                responseJsonObject.addProperty("status", "Error");                
 	                responseJsonObject.addProperty("message", "Sorry, the movies that that you searched for are not in our databases.");
 	            	response.getWriter().write(responseJsonObject.toString());
@@ -272,6 +274,7 @@ public class MobileSearchServlet extends HttpServlet {
 	                responseJsonObject.addProperty("pageNum", pageNum);
 	                responseJsonObject.addProperty("totalPages", totalPages);
 	                responseJsonObject.addProperty("totalResults", totalResults);
+	                responseJsonObject.addProperty("searchQuery", title);
 	            	responseJsonObject.addProperty("status", "Error");                
 	                responseJsonObject.addProperty("message", "Sorry for the inconvenience, but our servers are experiencing difficulties. Please try again later.");
 	            	response.getWriter().write(responseJsonObject.toString());

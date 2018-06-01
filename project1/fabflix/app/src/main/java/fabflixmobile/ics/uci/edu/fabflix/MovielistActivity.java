@@ -32,6 +32,12 @@ public class MovielistActivity extends AppCompatActivity{
 
 
     ListView listView;
+    TextView totalResultsView;
+    TextView pageNumView;
+    Button nextButton;
+    Button prevButton;
+    int pageNum;
+    String movieSearchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +46,50 @@ public class MovielistActivity extends AppCompatActivity{
 
         String passedArg = getIntent().getExtras().getString("json");
 
-        final ArrayList<Movie> movie = new ArrayList<>();
+        // Set view variables
+        totalResultsView = (TextView) findViewById(R.id.totalResults);
+        pageNumView = (TextView) findViewById(R.id.pageNum);
+        listView = (ListView) findViewById(R.id.list);
+        nextButton = (Button) findViewById(R.id.nextButton);
+        prevButton = (Button) findViewById(R.id.prevButton);
+        pageNum = 1;
+        movieSearchQuery = "";
 
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSearch(1);
+            }
+        });
+
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSearch(-1);
+            }
+        });
+
+
+        updatePage(passedArg);
+
+
+    }
+
+    public void updatePage(String jsonResponse)
+    {
+        final ArrayList<Movie> movie = new ArrayList<>();
+        int totalPages = 1;
+        int totalResults = 1;
         try{
-            JSONObject jsonObj = new JSONObject(passedArg.toString());
+
             String title = "";
             int year = 0;
+            JSONObject jsonObj = new JSONObject(jsonResponse.toString());
+
+            movieSearchQuery = jsonObj.getString("searchQuery");
+            pageNum = jsonObj.getInt("pageNum");
+            totalPages = jsonObj.getInt("totalPages");
+            totalResults = jsonObj.getInt("totalResults");
 
             JSONArray movieList = jsonObj.getJSONArray("movies");
             for(int i = 0; i < movieList.length(); ++i)
@@ -81,14 +125,32 @@ public class MovielistActivity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-
-        listView = (ListView) findViewById(R.id.list);
-
+        pageNumView.setText("Page " + pageNum + "/" + totalPages);
+        totalResultsView.setText("Total Results: " + totalResults);
+        if(pageNum == 1)
+        {
+            prevButton.setClickable(false);
+            prevButton.setEnabled(false);
+        }
+        else
+        {
+            prevButton.setClickable(true);
+            prevButton.setEnabled(true);
+        }
+        if(pageNum == totalPages)
+        {
+            nextButton.setClickable(false);
+            nextButton.setEnabled(false);
+        }
+        else
+        {
+            nextButton.setClickable(true);
+            nextButton.setEnabled(true);
+        }
 
         final MovieArrayAdapter adapter = new MovieArrayAdapter(this, movie);
         ListView listView = (ListView)findViewById(R.id.list);
         listView.setAdapter(adapter);
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,7 +160,32 @@ public class MovielistActivity extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void attemptSearch(int nextPage)
+    {
+        final RequestQueue queue = NetworkManager.sharedManager(this).queue;
 
+        final StringRequest loginRequest = new StringRequest(Request.Method.GET, "https://18.188.218.0:8443/project1/MobileServlet?title=" + movieSearchQuery + "&pagenum=" + (pageNum + nextPage),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("response", response);
+                        if(response.contains("Success")){ // if search works
+                            updatePage(response);
+                        }else{
+                            Log.d("Server Response", "Success wasn't found");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("security.error", error.toString());
+                    }
+                }
+        );
+        queue.add(loginRequest);
     }
 }
