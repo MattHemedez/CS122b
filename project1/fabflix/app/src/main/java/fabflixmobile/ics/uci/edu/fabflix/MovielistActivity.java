@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -94,8 +95,22 @@ public class MovielistActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie m = movie.get(position);
-                String message = String.format("Clicked on position: %d, name: %s, %d", position, m.getTitle(), m.getYear());
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                HashMap<String,String> movieInfo = new HashMap<String,String>();
+
+                movieInfo.put("title", m.getTitle());
+                movieInfo.put("year", Integer.toString(m.getYear()));
+                movieInfo.put("director", m.getDirector());
+                movieInfo.put("genres", m.getGenres());
+                movieInfo.put("stars", m.getStars());
+
+                Intent goToIntent = new Intent(MovielistActivity.this, SingleMovieActivity.class);
+                goToIntent.putExtra("hashmap", movieInfo);
+                startActivity(goToIntent);
+
+
+
+//                String message = String.format("Clicked on position: %d, name: %s, %d", position, m.getTitle(), m.getYear());
+//                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fabflixmobile.ics.uci.edu.fabflix.SingleMovieActivity" >
+    >
+
+    <TextView
+        android:id="@+id/movieName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Movie Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="28dp" />
+
+    <TextView
+        android:id="@+id/year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Year"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/director"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Director"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="24dp" />
+
+    <EditText
+        android:id="@+id/stars"
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="Stars" />
+
+    <EditText
+        android:id="@+id/genres"
+        android:layout_width="match_parent"
+        android:layout_height="111dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="Genres" />
+
+</LinearLayout>
