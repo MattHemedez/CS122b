@@ -46,12 +46,14 @@ public class MovielistActivity extends AppCompatActivity{
             JSONObject jsonObj = new JSONObject(passedArg.toString());
             String title = "";
             int year = 0;
-            String director = "";
-            String genres = "";
-            String stars = "";
+
             JSONArray movieList = jsonObj.getJSONArray("movies");
             for(int i = 0; i < movieList.length(); ++i)
             {
+                String director = "";
+                String genres = "";
+                String stars = "";
+
                 JSONObject jsonMovie = movieList.getJSONObject(i);
                 title = jsonMovie.getString("title");
                 year = jsonMovie.getInt("year");
