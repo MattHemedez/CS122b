@@ -32,6 +32,10 @@
             android:name=".MovielistActivity"
             android:label="The Movielist Page" />
 
+        <activity
+            android:name=".SingleMovieActivity"
+            android:label="The Single Movie Page" />
+
 
     </application>
 
