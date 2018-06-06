@@ -7,11 +7,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonObject;
 
@@ -60,19 +63,21 @@ public class SearchServlet extends HttpServlet {
 	        else
 	        	offset += ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(limit));
 	        
-	        String loginUser = "mytestuser";
-	        String loginPasswd = "mypassword";
-
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
-
-	        
 	        try 
 	        {
-	    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    		// create database connection
-	    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-	    		// declare statement
-	    		// Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	        	// the following few lines are for connection pooling
+	            // Obtain our environment naming context
+	            Context initCtx = new InitialContext();
+	            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+	            if (envCtx == null)
+	                System.out.println("envCtx is NULL");
+	            // Look up our data source
+	            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+	            if (ds == null)
+	                System.out.println("ds is null.");
+	            Connection dbcon = ds.getConnection();
+	            if (dbcon == null)
+	                System.out.println("dbcon is null.");
 	    		
 	    		// prepare query
 	    		String innerOrderBy = "m.";
@@ -95,8 +100,8 @@ public class SearchServlet extends HttpServlet {
 	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
 	    				+ "GROUP BY m.id ORDER BY m."+orderBy + " "+order + ";";
 	    		
-	            PreparedStatement statement = connection.prepareStatement(query);
-	            PreparedStatement statement2 = connection.prepareStatement(query2);
+	            PreparedStatement statement = dbcon.prepareStatement(query);
+	            PreparedStatement statement2 = dbcon.prepareStatement(query2);
 
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
@@ -109,8 +114,8 @@ public class SearchServlet extends HttpServlet {
 //	    			query += "m.title LIKE '" + ftitle + "%' AND ";
 	    			query = query.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
 	    			query2 = query2.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
-	    			statement = connection.prepareStatement(query);
-	    			statement2 = connection.prepareStatement(query2);
+	    			statement = dbcon.prepareStatement(query);
+	    			statement2 = dbcon.prepareStatement(query2);
 	    			statement.setString(1, ftitle + "%");
 	    			statement2.setString(1, ftitle + "%");
 
@@ -258,7 +263,7 @@ public class SearchServlet extends HttpServlet {
 	            }	    		
 	    		statement.close();
 	    		statement2.close();
-	    		connection.close();
+	    		dbcon.close();
 	    	}
 	        catch (Exception e) 
 	        {
