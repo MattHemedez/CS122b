@@ -27,19 +27,13 @@ public class EncryptUserPasswords {
     public static void main(String[] args) throws Exception {
     	// the following few lines are for connection pooling
         // Obtain our environment naming context
-        Context initCtx = new InitialContext();
-        Context envCtx = (Context) initCtx.lookup("java:comp/env");
-        if (envCtx == null)
-            System.out.println("envCtx is NULL");
-        // Look up our data source
-        DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
-        if (ds == null)
-            System.out.println("ds is null.");
-        Connection dbcon = ds.getConnection();
-        if (dbcon == null)
-            System.out.println("dbcon is null.");
+    	String loginUser = "mytestuser";
+        String loginPasswd = "mypassword";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
-        Statement statement = dbcon.createStatement();
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        Statement statement = connection.createStatement();
 
         // change the customers table password column from VARCHAR(20) to VARCHAR(128)
         String alterQuery = "ALTER TABLE customers MODIFY COLUMN password VARCHAR(128)";
@@ -83,7 +77,7 @@ public class EncryptUserPasswords {
         System.out.println("updating password completed, " + count + " rows affected");
 
         statement.close();
-        dbcon.close();
+        connection.close();
 
         System.out.println("finished");
 
