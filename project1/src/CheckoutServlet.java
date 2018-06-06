@@ -1,9 +1,13 @@
 import com.google.gson.JsonObject;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,19 +25,21 @@ public class CheckoutServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-
         try 
         {
-    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		// create database connection
-    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        	// the following few lines are for connection pooling
+            // Obtain our environment naming context
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                System.out.println("envCtx is NULL");
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            if (ds == null)
+                System.out.println("ds is null.");
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                System.out.println("dbcon is null.");
     		
     		// get the user input for the query
     		String creditCardNum = request.getParameter("creditcardnumber");
@@ -43,7 +49,7 @@ public class CheckoutServlet extends HttpServlet {
 	        String userId = ((User)request.getSession().getAttribute("user")).getId();
 	        		
 	        // Declare our statement
-	     	PreparedStatement statement = connection.prepareCall("{call checkout(?, ?, ?, ?, ?)}");
+	     	PreparedStatement statement = dbcon.prepareCall("{call checkout(?, ?, ?, ?, ?)}");
 
 	     	// Prepares the statement
 	     	statement.setString(1, userId);
@@ -87,7 +93,7 @@ public class CheckoutServlet extends HttpServlet {
     		
     		rs.close();
     		statement.close();
-    		connection.close();
+    		dbcon.close();
         } 
         
         catch (Exception e) 

@@ -5,11 +5,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -34,24 +37,30 @@ public class MobileLogin extends HttpServlet {
 		// Get the username and password from the mobile form
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
-        //Set up the connection
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
         
         // get the printwriter for writing response
         PrintWriter out = response.getWriter();
 
         try {
-    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		// create database connection
-    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+        	// the following few lines are for connection pooling
+            // Obtain our environment naming context
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                System.out.println("envCtx is NULL");
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            if (ds == null)
+                System.out.println("ds is null.");
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                System.out.println("dbcon is null.");
     		
     		// Create Query
     		String query = "SELECT c.firstName, c.lastName, c.id, c.password FROM customers AS c WHERE c.email LIKE ? OR c.email LIKE ?;";
     		
     		//Create Statement Connection
-	        PreparedStatement statement = connection.prepareStatement(query);
+	        PreparedStatement statement = dbcon.prepareStatement(query);
     		
 	        //Modify Prepared Statement
 	        statement.setString(1, username);
@@ -95,7 +104,7 @@ public class MobileLogin extends HttpServlet {
             }
     		resultSet.close();
     		statement.close();
-    		connection.close();
+    		dbcon.close();
     		
         } catch (Exception e) {
     		/*

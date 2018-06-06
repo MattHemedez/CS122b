@@ -7,11 +7,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -30,17 +33,21 @@ public class MobileSearchServlet extends HttpServlet {
 	        String limit = "10";
 	        String order = "title";
 	        
-	        String loginUser = "mytestuser";
-	        String loginPasswd = "mypassword";
-
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
-
-	        
 	        try 
 	        {
-	    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    		// create database connection
-	    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+	        	// the following few lines are for connection pooling
+	            // Obtain our environment naming context
+	            Context initCtx = new InitialContext();
+	            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+	            if (envCtx == null)
+	                System.out.println("envCtx is NULL");
+	            // Look up our data source
+	            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+	            if (ds == null)
+	                System.out.println("ds is null.");
+	            Connection dbcon = ds.getConnection();
+	            if (dbcon == null)
+	                System.out.println("dbcon is null.");
 	    		
 	    		String countQuery ="SELECT COUNT(m.id) AS total FROM movies AS m WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE);";
 	    				
@@ -55,8 +62,8 @@ public class MobileSearchServlet extends HttpServlet {
 		    				"		LEFT JOIN genres AS g ON gm.genreId = g.id" + 
 		    				"	GROUP BY m.id ORDER BY m.title;";
 	    		
-	            PreparedStatement countStatement = connection.prepareStatement(countQuery);
-	            PreparedStatement getMoviesStatement = connection.prepareStatement(getMoviesQuery);
+	            PreparedStatement countStatement = dbcon.prepareStatement(countQuery);
+	            PreparedStatement getMoviesStatement = dbcon.prepareStatement(getMoviesQuery);
 
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
@@ -282,7 +289,7 @@ public class MobileSearchServlet extends HttpServlet {
 	    		countStatement.close();
 	    		getMoviesStatement.close();
 	    		resultSet.close();
-	    		connection.close();
+	    		dbcon.close();
 	    	}
 	        catch (Exception e) 
 	        {

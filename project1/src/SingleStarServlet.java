@@ -2,6 +2,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,14 +22,6 @@ import java.sql.ResultSet;
 public class SingleStarServlet extends HttpServlet {
 	private static final long serialVersionUID = 2L;
 
-	// Create a dataSource which registered in web.xml
-	//@Resource(name = "jdbc/moviedb")
-	//private DataSource dataSource;
-	String loginUser = "mytestuser";
-    String loginPasswd = "mypassword";
-
-    String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -44,11 +38,19 @@ public class SingleStarServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		try {
-			// Get a connection from dataSource
-			//Connection dbcon = dataSource.getConnection();
-			// create database connection
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+			// the following few lines are for connection pooling
+            // Obtain our environment naming context
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                System.out.println("envCtx is NULL");
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            if (ds == null)
+                System.out.println("ds is null.");
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                System.out.println("dbcon is null.");
 
 			// Construct a query with parameter represented by "?"
     		String query = "SELECT s.id AS starId, s.name, s.birthYear, m.id AS movieId, m.title, m.director, m.year, r.rating, r.numVotes, GROUP_CONCAT(DISTINCT g.name SEPARATOR ', ') AS genres "
@@ -56,7 +58,7 @@ public class SingleStarServlet extends HttpServlet {
     				+ "WHERE s.id = ?	 GROUP BY m.id;";
 
 			// Declare our statement
-			PreparedStatement statement = connection.prepareStatement(query);
+			PreparedStatement statement = dbcon.prepareStatement(query);
 
 			// Set the parameter represented by "?" in the query to the id we get from url,
 			// num 1 indicates the first "?" in the query
@@ -155,7 +157,7 @@ public class SingleStarServlet extends HttpServlet {
 
 			rs.close();
 			statement.close();
-			connection.close();
+			dbcon.close();
 		} catch (Exception e) {
 			// write error message JSON object to output
 			JsonObject jsonObject = new JsonObject();

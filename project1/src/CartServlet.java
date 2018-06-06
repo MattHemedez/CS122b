@@ -1,5 +1,7 @@
 
 import javax.annotation.Resource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,13 +29,6 @@ import java.sql.PreparedStatement;
 @WebServlet(name = "CartServlet", urlPatterns = "/api/cart")
 public class CartServlet extends HttpServlet {
 	private static final long serialVersionUID = 2L;
-	// Create a dataSource which registered in web.xml
-	//@Resource(name = "jdbc/moviedb")
-	//private DataSource dataSource;
-	String loginUser = "mytestuser";
-	String loginPasswd = "mypassword";
-	String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
-
 
 	public PreparedStatement updateMovies(Connection connection, String movieId, String customerId, String movieName, String moviePoster, int changeQuant) throws SQLException {
         String query = "INSERT INTO cart(movieId, customerId, quantity, movieTitle, moviePoster) "
@@ -105,12 +100,20 @@ public class CartServlet extends HttpServlet {
         
         try 
         {
-    		Class.forName("com.mysql.jdbc.Driver").newInstance();
-    		// create database connection
-    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-    		// declare statement
-//    		Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, 
-//    				   				ResultSet.CONCUR_READ_ONLY);
+        	// the following few lines are for connection pooling
+            // Obtain our environment naming context
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                System.out.println("envCtx is NULL");
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            if (ds == null)
+                System.out.println("ds is null.");
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                System.out.println("dbcon is null.");
+            
 			JsonArray jsonShoppingCart = new JsonArray();
 
     		if(movieId != null || movieName != null) {
@@ -123,22 +126,22 @@ public class CartServlet extends HttpServlet {
     	        	
     	        	changeQuantity =(request.getParameter("deleteButton")!=null ? 0:
     	        			Integer.parseInt(request.getParameter("inputChange")));
-    	        	PreparedStatement toExecute= deleteUpdate(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
+    	        	PreparedStatement toExecute= deleteUpdate(dbcon,movieId, customerId,movieName, moviePoster,changeQuantity);
     	        	toExecute.executeUpdate();
         			toExecute.close();
     	        }else {
     	        	System.out.println("COMES IN HERE CARTSERVLET INC/DEC");
-    	        	PreparedStatement toExecute= updateMovies(connection,movieId, customerId,movieName, moviePoster,changeQuantity);
+    	        	PreparedStatement toExecute= updateMovies(dbcon,movieId, customerId,movieName, moviePoster,changeQuantity);
     	        	toExecute.executeUpdate();
         			toExecute.close();
     	        }
     			
-    			connection.close();
+    			dbcon.close();
                 response.sendRedirect("/project1/shoppingcart.html"); // CHANGE THIS PATH TO cs122b-spring18-team-55/shoppingcart.html WHEN TESTING ON YOUR LOCALHOST
 
     		}else {
     			// need to fetch the customers data
-    			PreparedStatement statement = returnMovies(connection, customerId);
+    			PreparedStatement statement = returnMovies(dbcon, customerId);
     			ResultSet rs = statement.executeQuery();
 
     			while(rs.next()) {
@@ -162,7 +165,7 @@ public class CartServlet extends HttpServlet {
                 rs.close();
                 statement.close();
     		}
-			connection.close();
+			dbcon.close();
         }
         catch(Exception e){
 			// write error message JSON object to output
