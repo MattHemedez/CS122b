@@ -157,20 +157,11 @@ public class SearchServlet extends HttpServlet {
 
 	    		resultSet = statement2.executeQuery();
 
-	    		String url =request.getScheme() + "://" +   // "http" + "://
-	    	             request.getServerName() +       // "myhost"
-	    	             ":" +                           // ":"
-	    	             request.getServerPort() +       // "8080"
-	    	             request.getRequestURI() +       // "/people"
-	    	             "?" +                           // "?"
+	    		String url = "SearchServlet?" +
 	    	             request.getQueryString();
 	    		
 	    		
-	    		String baseUrl =request.getScheme() + "://" +   // "http" + "://
-	    	             request.getServerName() +       // "myhost"
-	    	             ":" +                           // ":"
-	    	             request.getServerPort()+        // "8080"
-	    	             request.getRequestURI();        // "/people"
+	    		String baseUrl = "SearchServlet";
 	    		
 	    		baseUrl = baseUrl.substring(0,baseUrl.length()-13);
 	    		
