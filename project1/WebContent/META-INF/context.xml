@@ -16,4 +16,12 @@
               maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="mytestuser"
               password="mypassword" driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true&amp;useSSL=false"/>
+              
+              
+    <Resource name="jdbc/MasterDB" auth="Container" type="javax.sql.DataSource"
+              maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="mytestuser"
+              password="mypassword" driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://18.191.115.220:3306/moviedb?allowMultiQueries=true&amp;useSSL=false"/>              
+              
+              
 </Context>
