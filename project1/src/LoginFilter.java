@@ -47,6 +47,7 @@ public class LoginFilter implements Filter {
     // You might also want to allow some CSS files, etc..
     private boolean isUrlAllowedWithoutLogin(String requestURI) {
         requestURI = requestURI.toLowerCase();
+
         return true;
         /*
         return requestURI.endsWith("login.html") || requestURI.endsWith("login.js")
@@ -56,6 +57,7 @@ public class LoginFilter implements Filter {
         		|| requestURI.endsWith("dashboard_login.jpg") || requestURI.endsWith("api/dashboard_login")
         		|| requestURI.endsWith("api/mobile-login");
 		*/
+
     }
 
     
