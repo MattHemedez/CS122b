@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -10,6 +12,7 @@ import java.util.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +33,7 @@ public class SearchServlet extends HttpServlet {
 	    /**
 	     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	     */
-	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    	
+	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {	    	
 	    	String title = request.getParameter("title");
 	    	String ftitle = request.getParameter("ftitle"); // Search by first letter
 	    	String year = request.getParameter("eyear");
@@ -108,7 +110,6 @@ public class SearchServlet extends HttpServlet {
 //	    			query += "m.title LIKE '%" + title + "%' AND ";
 	    			statement.setString(1, "+" + title + "*");
 	    			statement2.setString(1, "+" + title + "*");
-
 	    			
 	    		}else if(ftitle != null && !ftitle.equals("")) {
 //	    			query += "m.title LIKE '" + ftitle + "%' AND ";
@@ -138,9 +139,11 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		statement2.setInt(6, Integer.parseInt(limit));
 	    		statement2.setInt(7, Integer.parseInt(offset));
-
+	    		// Time an event in a program to nanosecond precision
+	    		long startTimeTS = System.nanoTime(); 
 	    		ResultSet resultSet = statement.executeQuery();
-	    		
+	    		long endTimeTS = System.nanoTime();
+	    		long elapsedTimeTS = endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
 	    		System.out.println(statement.toString());
 	    		
 	    		int totalResults = 0;
@@ -155,8 +158,11 @@ public class SearchServlet extends HttpServlet {
 	    		System.out.println(totalResults);
 	    		System.out.println("Q2: " + statement2.toString());
 
+	    		startTimeTS = System.nanoTime();
 	    		resultSet = statement2.executeQuery();
-
+	    		endTimeTS = System.nanoTime();
+	    		elapsedTimeTS += endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
+	    		
 	    		String url = "SearchServlet?" +
 	    	             request.getQueryString();
 	    		
@@ -255,10 +261,30 @@ public class SearchServlet extends HttpServlet {
 	    		statement.close();
 	    		statement2.close();
 	    		dbcon.close();
+	    		appendToLogFile(elapsedTimeTS, "TJLog.mat", request);
 	    	}
 	        catch (Exception e) 
 	        {
 	    		e.printStackTrace();
 	    	}
 	    }
+	    
+	    private void appendToLogFile(long elapsedTime, String fileName, ServletRequest request)
+		{
+			String contextPath = request.getServletContext().getRealPath("");
+			String filePath=contextPath + fileName;
+			System.out.println(filePath);
+			File myfile = new File(filePath);
+			try
+			{
+				myfile.createNewFile();
+				FileWriter writer = new FileWriter(myfile, true);
+				writer.append(elapsedTime + "\n");
+				writer.close();
+			}
+			catch (Exception e)
+			{
+				System.out.print("File failed to write");
+			}
+		}
 }
