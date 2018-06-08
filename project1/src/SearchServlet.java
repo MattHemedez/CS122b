@@ -67,19 +67,34 @@ public class SearchServlet extends HttpServlet {
 	        
 	        try 
 	        {
+	        	
+		        String loginUser = "mytestuser";
+		        String loginPasswd = "mypassword";
+
+		        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
+	        	
+	        	
+	    		Class.forName("com.mysql.jdbc.Driver").newInstance();
+	    		// create database connection
+	    		Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+	    		// declare statement
+	    		// Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	        	
+	        	
+	        	
 	        	// the following few lines are for connection pooling
 	            // Obtain our environment naming context
-	            Context initCtx = new InitialContext();
-	            Context envCtx = (Context) initCtx.lookup("java:comp/env");
-	            if (envCtx == null)
-	                System.out.println("envCtx is NULL");
-	            // Look up our data source
-	            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
-	            if (ds == null)
-	                System.out.println("ds is null.");
-	            Connection dbcon = ds.getConnection();
-	            if (dbcon == null)
-	                System.out.println("dbcon is null.");
+//	            Context initCtx = new InitialContext();
+//	            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+//	            if (envCtx == null)
+//	                System.out.println("envCtx is NULL");
+//	            // Look up our data source
+//	            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+//	            if (ds == null)
+//	                System.out.println("ds is null.");
+//	            Connection dbcon = ds.getConnection();
+//	            if (dbcon == null)
+//	                System.out.println("dbcon is null.");
 	    		
 	    		// prepare query
 	    		String innerOrderBy = "m.";

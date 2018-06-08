@@ -34,7 +34,7 @@ public class CheckoutServlet extends HttpServlet {
             if (envCtx == null)
                 System.out.println("envCtx is NULL");
             // Look up our data source
-            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/MasterDB");
             if (ds == null)
                 System.out.println("ds is null.");
             Connection dbcon = ds.getConnection();
