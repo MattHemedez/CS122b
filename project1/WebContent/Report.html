@@ -24,43 +24,51 @@ td {
   </tr>
   <tr>
     <td>Case 1: HTTP/1 thread</td>
-    <td><img src="graph_results_case1.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/single_case_imgs/single_case3.PNG" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+	<td>352</td>
+	<td>187.26</td>
+	<td>2.12</td>
+	<td>This computation consisted of 1 thread (user) and using Connection pooling. The average times of this case came out as expected, where the average search time
+		came out as 187ms and the JDBC time as 2.12ms. The average query time came out to be 352, which was similar to the other connection pooling schemes.</td>
   </tr>
   <tr>
     <td>Case 2: HTTP/10 threads</td>
-    <td><img src="graph_results_case2.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/single_case_imgs/single_case4.PNG" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+	<td>353</td>
+    <td>178.20</td>
+    <td>2.26</td>
+    <td>This computation ran with 10 thread (users) and used connection pooling. Again this computation even with 10 threads showed little to no difference from the 
+		above averages. This is probably due to the fact that the queries were cached in connection pooling in this example and each call from the thread just used the 
+		cache results/query. Thus realistically even with 10 threads it is actually running like it suppose to with 1 thread.</td>
   </tr>
   <tr>
     <td>Case 3: HTTPS/10 threads</td>
-    <td><img src="graph_results_case3.png" alt="Graph Results Screenshot Case 3" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/single_case_imgs/single_case5.PNG" alt="Graph Results Screenshot Case 3" style="width:304px;height:228px;"></td>
+	<td>382</td>
+	<td>178.20</td>
+	<td>2.26</td>
+    <td>On this computation there was 10 threads (users) with connection pooling and also ran on HTTPS. The average times came out similar to the 10 threads on HTTP, there
+		should not be any major differences between these two internet protocols.</td>
   </tr>
   <tr>
     <td>Case 4: HTTP/10 threads/No prepared statements</td>
-    <td><img src="graph_results_case4.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/single_case_imgs/single_case1.PNG" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+	<td>361</td>
+    <td>55.73</td>
+    <td>21.11</td>
+    <td>For this computation we used 10 threads (users) and no prepared statements. This time the average search servlet time significantly increased because the usage of 
+		prepared statements happens in two steps, which is slower then the normal query statements. However, the average JDBC times went up significantly for this case 
+		as well. The query is not cached this time so there is no reuse of the duplicate queries (movie titles) in our search.</td>
   </tr>
   <tr>
     <td>Case 5: HTTP/10 threads/No connection pooling</td>
-    <td><img src="graph_results_case4.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/single_case_imgs/single_case2.PNG" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+	<td>573</td>
+    <td>268.67</td>
+    <td>2.53</td>
+    <td>This computation consisted of 10 threads (users) and no connection pooling. At a quick glance we see that there are big increases on the average query time and 
+		average serach servlet time. This is because it does not reuse the connection pooling, and opens a new connection every query. Where as in the old compuations there	
+		is connection pooling reusing the connections.</td>
   </tr>
 
 </table> 

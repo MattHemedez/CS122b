@@ -22,14 +22,15 @@ public class SimpleAverageScript
 				if(myFile.exists())
 				{
 					Scanner sc = new Scanner(myFile);
-					int sum = 0;
+					double sum = 0;
 					int numItems = 0;
 					while(sc.hasNextLine())
 					{
-						sum += Integer.parseInt(sc.nextLine());
+						// BigInteger number = new BigInteger(sc.nextLine());
+						sum +=(Long.parseLong(sc.nextLine()) / 1000000.0);
 						++numItems;
 					}
-					int average = sum / numItems;
+					double average = sum / numItems;
 					System.out.println("File Name: " + fileName);
 					System.out.println("File Path: " + filePath);
 					System.out.println("Number of entries: " + numItems);
