@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -21,10 +25,11 @@ public class EncryptUserPasswords {
      * 
      */
     public static void main(String[] args) throws Exception {
-
-        String loginUser = "mytestuser";
+    	// the following few lines are for connection pooling
+        // Obtain our environment naming context
+    	String loginUser = "mytestuser";
         String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-13-58-24-62.us-east-2.compute.amazonaws.com:3306/moviedb";
+        String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);

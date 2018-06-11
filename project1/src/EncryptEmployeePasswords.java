@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
@@ -21,14 +25,21 @@ public class EncryptEmployeePasswords {
      * 
      */
     public static void main(String[] args) throws Exception {
-
-        String loginUser = "mytestuser";
-        String loginPasswd = "mypassword";
-        String loginUrl = "jdbc:mysql://ec2-13-58-24-62.us-east-2.compute.amazonaws.com:3306/moviedb";
-
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
-        Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
-        Statement statement = connection.createStatement();
+    	// the following few lines are for connection pooling
+        // Obtain our environment naming context
+        Context initCtx = new InitialContext();
+        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+        if (envCtx == null)
+            System.out.println("envCtx is NULL");
+        // Look up our data source
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+        if (ds == null)
+            System.out.println("ds is null.");
+        Connection dbcon = ds.getConnection();
+        if (dbcon == null)
+            System.out.println("dbcon is null.");
+        
+        Statement statement = dbcon.createStatement();
 
         // change the employees table password column from VARCHAR(20) to VARCHAR(128)
         String alterQuery = "ALTER TABLE employees MODIFY COLUMN password VARCHAR(128)";
@@ -72,7 +83,7 @@ public class EncryptEmployeePasswords {
         System.out.println("updating password completed, " + count + " rows affected");
 
         statement.close();
-        connection.close();
+        dbcon.close();
 
         System.out.println("finished");
 

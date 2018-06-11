@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -7,11 +9,15 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonObject;
 
@@ -27,8 +33,7 @@ public class SearchServlet extends HttpServlet {
 	    /**
 	     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	     */
-	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    	
+	    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {	    	
 	    	String title = request.getParameter("title");
 	    	String ftitle = request.getParameter("ftitle"); // Search by first letter
 	    	String year = request.getParameter("eyear");
@@ -60,19 +65,36 @@ public class SearchServlet extends HttpServlet {
 	        else
 	        	offset += ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(limit));
 	        
-	        String loginUser = "mytestuser";
-	        String loginPasswd = "mypassword";
-
-	        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
-
-	        
 	        try 
 	        {
+	        	
+		        String loginUser = "mytestuser";
+		        String loginPasswd = "mypassword";
+
+		        String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
+	        	
+	        	
 	    		Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    		// create database connection
-	    		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+	    		Connection dbcon = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 	    		// declare statement
 	    		// Statement statement = connection.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	        	
+	        	
+	        	
+	        	// the following few lines are for connection pooling
+	            // Obtain our environment naming context
+//	            Context initCtx = new InitialContext();
+//	            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+//	            if (envCtx == null)
+//	                System.out.println("envCtx is NULL");
+//	            // Look up our data source
+//	            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+//	            if (ds == null)
+//	                System.out.println("ds is null.");
+//	            Connection dbcon = ds.getConnection();
+//	            if (dbcon == null)
+//	                System.out.println("dbcon is null.");
 	    		
 	    		// prepare query
 	    		String innerOrderBy = "m.";
@@ -95,8 +117,8 @@ public class SearchServlet extends HttpServlet {
 	    				+ "ORDER BY "+innerOrderBy+orderBy  +" " +order +" LIMIT ? OFFSET ?) AS m LEFT JOIN stars_in_movies AS sm ON m.id = sm.movieId LEFT JOIN stars AS s ON sm.starId = s.id LEFT JOIN genres_in_movies AS gm ON m.id = gm.movieId LEFT JOIN genres AS g ON gm.genreId = g.id "
 	    				+ "GROUP BY m.id ORDER BY m."+orderBy + " "+order + ";";
 	    		
-	            PreparedStatement statement = connection.prepareStatement(query);
-	            PreparedStatement statement2 = connection.prepareStatement(query2);
+	            PreparedStatement statement = dbcon.prepareStatement(query);
+	            PreparedStatement statement2 = dbcon.prepareStatement(query2);
 
 	            // Setting the title 
 	    		if(title != null && !title.equals("")) {
@@ -115,14 +137,12 @@ public class SearchServlet extends HttpServlet {
 		    			statement.setString(1, "+" + title + "*");
 		    			statement2.setString(1, "+" + title + "*");
 	    			}
-
-	    			
 	    		}else if(ftitle != null && !ftitle.equals("")) {
 //	    			query += "m.title LIKE '" + ftitle + "%' AND ";
 	    			query = query.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
 	    			query2 = query2.replace("(MATCH (title) AGAINST (? IN BOOLEAN MODE))", "m.title LIKE ?");
-	    			statement = connection.prepareStatement(query);
-	    			statement2 = connection.prepareStatement(query2);
+	    			statement = dbcon.prepareStatement(query);
+	    			statement2 = dbcon.prepareStatement(query2);
 	    			statement.setString(1, ftitle + "%");
 	    			statement2.setString(1, ftitle + "%");
 
@@ -145,9 +165,11 @@ public class SearchServlet extends HttpServlet {
 	    		
 	    		statement2.setInt(6, Integer.parseInt(limit));
 	    		statement2.setInt(7, Integer.parseInt(offset));
-
+	    		// Time an event in a program to nanosecond precision
+	    		long startTimeTS = System.nanoTime(); 
 	    		ResultSet resultSet = statement.executeQuery();
-	    		
+	    		long endTimeTS = System.nanoTime();
+	    		long elapsedTimeTS = endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
 	    		System.out.println(statement.toString());
 	    		
 	    		int totalResults = 0;
@@ -162,22 +184,16 @@ public class SearchServlet extends HttpServlet {
 	    		System.out.println(totalResults);
 	    		System.out.println("Q2: " + statement2.toString());
 
+	    		startTimeTS = System.nanoTime();
 	    		resultSet = statement2.executeQuery();
-
-	    		String url =request.getScheme() + "://" +   // "http" + "://
-	    	             request.getServerName() +       // "myhost"
-	    	             ":" +                           // ":"
-	    	             request.getServerPort() +       // "8080"
-	    	             request.getRequestURI() +       // "/people"
-	    	             "?" +                           // "?"
+	    		endTimeTS = System.nanoTime();
+	    		elapsedTimeTS += endTimeTS - startTimeTS; // elapsed time in nano seconds. Note: print the values in nano seconds
+	    		
+	    		String url = "SearchServlet?" +
 	    	             request.getQueryString();
 	    		
 	    		
-	    		String baseUrl =request.getScheme() + "://" +   // "http" + "://
-	    	             request.getServerName() +       // "myhost"
-	    	             ":" +                           // ":"
-	    	             request.getServerPort()+        // "8080"
-	    	             request.getRequestURI();        // "/people"
+	    		String baseUrl = "SearchServlet";
 	    		
 	    		baseUrl = baseUrl.substring(0,baseUrl.length()-13);
 	    		
@@ -270,11 +286,31 @@ public class SearchServlet extends HttpServlet {
 	            }	    		
 	    		statement.close();
 	    		statement2.close();
-	    		connection.close();
+	    		dbcon.close();
+	    		appendToLogFile(elapsedTimeTS, "TJLog.mat", request);
 	    	}
 	        catch (Exception e) 
 	        {
 	    		e.printStackTrace();
 	    	}
 	    }
+	    
+	    private void appendToLogFile(long elapsedTime, String fileName, ServletRequest request)
+		{
+			String contextPath = request.getServletContext().getRealPath("");
+			String filePath=contextPath + fileName;
+			System.out.println(filePath);
+			File myfile = new File(filePath);
+			try
+			{
+				myfile.createNewFile();
+				FileWriter writer = new FileWriter(myfile, true);
+				writer.append(elapsedTime + "\n");
+				writer.close();
+			}
+			catch (Exception e)
+			{
+				System.out.print("File failed to write");
+			}
+		}
 }

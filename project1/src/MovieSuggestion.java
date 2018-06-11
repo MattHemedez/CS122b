@@ -6,11 +6,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -32,24 +35,30 @@ public class MovieSuggestion extends HttpServlet {
 
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String loginUser = "mytestuser";
-		String loginPasswd = "mypassword";
-		String loginUrl = "jdbc:mysql://localhost:3306/moviedb?allowMultiQueries=true";
-
 		JsonArray jsonArray = new JsonArray(); // send back out to the js
 
 		
 		try {
-			// Establish the connection 
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+			// the following few lines are for connection pooling
+            // Obtain our environment naming context
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            if (envCtx == null)
+                System.out.println("envCtx is NULL");
+            // Look up our data source
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/TestDB");
+            if (ds == null)
+                System.out.println("ds is null.");
+            Connection dbcon = ds.getConnection();
+            if (dbcon == null)
+                System.out.println("dbcon is null.");
+            
 			String movieQuery= request.getParameter("query").trim();
 			String splitQuery[] = movieQuery.split(" ");
 					
 					
 			String query = "SELECT m.title, m.id FROM movies AS m WHERE MATCH (title) AGAINST (? IN BOOLEAN MODE) LIMIT 10;";
-			PreparedStatement statement = connection.prepareStatement(query);
+			PreparedStatement statement = dbcon.prepareStatement(query);
 
 			
 			String newString = "";
@@ -74,6 +83,7 @@ public class MovieSuggestion extends HttpServlet {
             response.setStatus(200);
             rs.close();
             statement.close();
+            dbcon.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
