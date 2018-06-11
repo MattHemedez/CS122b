@@ -9,48 +9,54 @@ public class SimpleAverageScript
 		{
 			System.out.println("Error. Enter the name of the file to read...");
 		}
-		else if(args.length == 1)
+		else
 		{
 			final String execDir = System.getProperty("user.dir");
 			
-			String fileName = args[0];
+			long sum = 0;
+			long totalNumItems = 0;
+			long numItems = 0;
 			
-			String filePath= execDir + "/" + fileName;
-			File myFile = new File(filePath);
-			try
+			for(int i = 0; i < args.length; ++i)
 			{
-				if(myFile.exists())
+				String fileName = args[i];
+				
+				String filePath= execDir + "/" + fileName;
+				File myFile = new File(filePath);
+				try
 				{
-					Scanner sc = new Scanner(myFile);
-					double sum = 0;
-					int numItems = 0;
-					while(sc.hasNextLine())
+					if(myFile.exists())
 					{
-						// BigInteger number = new BigInteger(sc.nextLine());
-						sum +=(Long.parseLong(sc.nextLine()) / 1000000.0);
-						++numItems;
+						numItems = 0;
+						Scanner sc = new Scanner(myFile);
+						while(sc.hasNextLine())
+						{
+							sum += Long.parseLong(sc.nextLine());
+							++totalNumItems;
+							++numItems;
+						}
+						System.out.println("File Name: " + fileName);
+						System.out.println("\tFile Path: " + filePath);
+						System.out.println("\tNumber of entries: " + numItems);
+						System.out.println("\tSuccessfully calculated sum value");
+						sc.close();
 					}
-					double average = sum / numItems;
-					System.out.println("File Name: " + fileName);
-					System.out.println("File Path: " + filePath);
-					System.out.println("Number of entries: " + numItems);
-					System.out.println("Average: " + average);
-					System.out.println("Successfully calculated average value");
-					sc.close();
+					else
+					{
+						System.out.println("File doesn't exist");
+					}
 				}
-				else
+				catch (Exception e)
 				{
-					System.out.println("File doesn't exist");
+					System.out.println("Failed to read from file. Exception:\n" + e);
 				}
 			}
-			catch (Exception e)
-			{
-				System.out.print("Failed to read from file. Exception:\n" + e);
-			}
-		}
-		else
-		{
-			System.out.println("Too many arguements");
+			double average = sum / totalNumItems;
+			System.out.println("End Results\n~~~~~~~~~~~~");
+			System.out.println("Average: " + average + " nano seconds");
+			System.out.println("Sum: " + sum);
+			System.out.println("Total Entries: " + totalNumItems);
+			
 		}
 	}
 }

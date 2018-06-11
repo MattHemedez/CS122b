@@ -85,35 +85,35 @@ td {
   </tr>
   <tr>
     <td>Case 1: HTTP/1 thread</td>
-    <td><img src="graph_results_case1.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/scaled_case_imgs/ScaledCase1.png" alt="Graph Results Screenshot Case 1" style="width:304px;height:228px;"></td>
+    <td>328</td>
+    <td>171.590</td>
+    <td>2.099</td>
+    <td>This test consisted of a single thread using http along with connection pooling and prepared statements. The average query time, search servlet time, and jdbc times are all reasonable values. This gives us a baseline when considering the other cases.</td>
   </tr>
   <tr>
     <td>Case 2: HTTP/10 threads</td>
-    <td><img src="graph_results_case2.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/scaled_case_imgs/ScaledCase2.png" alt="Graph Results Screenshot Case 2" style="width:304px;height:228px;"></td>
+    <td>492</td>
+    <td>305.864</td>
+    <td>2.051</td>
+    <td>This test ran with 10 threads using http, connection pooling, and prepared statements. The main thing to note is that the response time (Tr) increased substantially relative to the other factors while the payload time(Tp) increased by only 30ms. This possibly indicates that the Search Servlet was having trouble keeping up with the requests of 10 threads.</td>
   </tr>
   <tr>
     <td>Case 3: HTTP/10 threads/No prepared statements</td>
-    <td><img src="graph_results_case4.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/scaled_case_imgs/ScaledCase3.png" alt="Graph Results Screenshot Case 3" style="width:304px;height:228px;"></td>
+    <td>9393</td>
+    <td>9187.616</td>
+    <td>2.142</td>
+    <td>This test ran with 10 threads without using prepared statements. This test shows a remarkable difference as the average Search Servlet time increased substantially to just under 10 seconds which is extremely large relative to the previous tests. Their was no significant increase in the average jdbc time which probably indicates that the code became significantly less efficient when not using prepared statements. This was unexpected as instead the average jdbc time should been the most significant difference due to  prepared statements not being cached and prepared(in the database) before hand.</td>
   </tr>
   <tr>
     <td>Case 4: HTTP/10 threads/No connection pooling</td>
-    <td><img src="graph_results_case4.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
-    <td>??</td>
-    <td>??</td>
-    <td>??</td>
-    <td>--</td>
+    <td><img src="imgs/scaled_case_imgs/ScaledCase4.png" alt="Graph Results Screenshot Case 4" style="width:304px;height:228px;"></td>
+    <td>484</td>
+    <td>294.423</td>
+    <td>2.006</td>
+    <td>This test ran with 10 threads without using connection pooling. Looking at this there was no significant difference between this case and case 2 of the scaled versions. This is odd, as there should be an expected increase in the average Search Servlet time at least as the lack of connection pooling meant that there should be an increase in overhead maintaining and creating connections to the database for each individual user.</td>
   </tr>
 
 </table> 
